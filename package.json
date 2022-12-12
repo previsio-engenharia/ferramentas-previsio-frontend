@@ -3,29 +3,43 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "dependencies": {
+    "caniuse-lite": "^1.0.30001431",
+    "nanoid": "^3.3.4",
+    "dotenv": "^16.0.3",
+    "client-only": "^0.0.1",
+    "loose-envify": "^1.4.0",
+    "invariant": "^2.2.4",
+    "js-tokens": "^4.0.0",
+    "next": "^13.0.6",
+    "picocolors": "^1.0.0",
+    "postcss": "^8.4.14",
+    "react": "^18.2.0",
+    "react-content-loader": "^6.2.0",
+    "react-dom": "^18.2.0",
+    "react-input-mask": "^2.0.4",
+    "scheduler": "^0.23.0",
+    "source-map-js": "^1.0.2",
+    "styled-jsx": "^5.1.0",
+    "tslib": "^2.4.1",
+    "warning": "^4.0.3"
+  },
+  "devDependencies": {},
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joeldc94/test-nextjs.git"
+    "url": "git+https://github.com/previsio-engenharia/ferramentas-previsio-frontend.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/joeldc94/test-nextjs/issues"
+    "url": "https://github.com/previsio-engenharia/ferramentas-previsio-frontend/issues"
   },
-  "homepage": "https://github.com/joeldc94/test-nextjs#readme",
-  "dependencies": {
-    "dotenv": "^16.0.3",
-    "next": "^13.0.2",
-    "react": "^18.2.0",
-    "react-content-loader": "^6.2.0",
-    "react-dom": "^18.2.0",
-    "react-input-mask": "^2.0.4"
-  }
+  "homepage": "https://github.com/previsio-engenharia/ferramentas-previsio-frontend#readme"
 }

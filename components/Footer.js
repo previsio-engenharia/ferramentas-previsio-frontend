@@ -9,11 +9,11 @@ const Footer = () => (
                     </h3>
                     <hr/>
                     <ul className='lista'>
-                        <li><i class="fa-solid fa-location-dot"></i><span> Rua Júlio de Castilhos, 45 Niterói - Canoas /RS</span>
+                        <li><i className="fa-solid fa-location-dot"></i><span> Rua Júlio de Castilhos, 45 Niterói - Canoas /RS</span>
                         </li>
-                        <li><i class="fa-regular fa-envelope"></i><span><a href="mailto:comercial@previsio.com.br">comercial@previsio.com.br</a></span>
+                        <li><i className="fa-regular fa-envelope"></i><span><a href="mailto:comercial@previsio.com.br">comercial@previsio.com.br</a></span>
                         </li>
-                        <li><i class="fa-sharp fa-solid fa-phone-flip"></i><span><a href="tel:+55(51)34669601">(51) 3466.9601</a></span>
+                        <li><i className="fa-sharp fa-solid fa-phone-flip"></i><span><a href="tel:+55(51)34669601">(51) 3466.9601</a></span>
                         </li>
                     </ul>
                 </div>
@@ -24,22 +24,22 @@ const Footer = () => (
                     <hr/>
                     <ul className='lista indice'>
                         <li>
-                            <i class="fa-regular fa-circle"></i><a href="https://previsio.com.br/">Início</a>
+                            <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/">Início</a>
                         </li>
                         <li>
-                        <i class="fa-regular fa-circle"></i><a href="https://previsio.com.br/seguranca-do-trabalho/">Soluções e Serviços</a>
+                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/seguranca-do-trabalho/">Soluções e Serviços</a>
                         </li>
                         <li>
-                        <i class="fa-regular fa-circle"></i><a href="https://previsio.com.br/artigos/">Artigos</a>
+                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/artigos/">Artigos</a>
                         </li>
                         <li>
-                        <i class="fa-regular fa-circle"></i><a href="https://previsio.com.br/downloads/">Downloads</a>
+                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/downloads/">Downloads</a>
                         </li>
                         <li>
-                        <i class="fa-regular fa-circle"></i><a href="https://ferramentas.previsio.com.br">Ferramentas</a>
+                        <i className="fa-regular fa-circle"></i><a href="https://ferramentas.previsio.com.br">Ferramentas</a>
                         </li>
                         <li>
-                        <i class="fa-regular fa-circle"></i><a href="https://previsio.com.br/contato/">Contato</a>
+                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/contato/">Contato</a>
                         </li>
                         
                     </ul>
