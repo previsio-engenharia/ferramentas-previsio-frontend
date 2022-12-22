@@ -15,11 +15,13 @@ function ConsultaNR04(){
     const [loading, setLoading] = useState(false);
 
     const [dataForm, setDataForm] = useState({
+        consulta: 'nr04',
         cnpj: '',
         codigo_cnae1: '',
         codigo_cnae2: '',
         numero_trabalhadores: '',
-        type: ''
+        type: '',
+        userEmail: ''
     });
 
     const [response, setResponse] = useState({
@@ -56,6 +58,9 @@ function ConsultaNR04(){
     const onChangeInput = e => setDataForm({...dataForm, [e.target.name]: e.target.value});
 
     const sendInfo = async e => {
+        //inicia placeholder
+        setLoading(true);
+
         //indica que não deve recarregar a página
         e.preventDefault(); 
 
@@ -67,6 +72,16 @@ function ConsultaNR04(){
             setLoading(false);
             return
         }
+
+        if(dataForm.userEmail.length > 0){
+            var emailRegex = /\S+@\S+\.\S+/
+            if(!dataForm.userEmail.match(emailRegex)){
+                alert('Erro: Insira um e-mail válido.');
+                //setResponse({loading: false}); 
+                setLoading(false);
+                return
+            }
+        }        
        
         //verifica inicialmente se o CNPJ foi inserido corretamente
         if(dataForm.type == 'cnpj'){
@@ -100,7 +115,6 @@ function ConsultaNR04(){
         }else{
             //dá falha se não reconhecer nem cnpj nem cnae
             alert('Erro: Falha no envio do formulário');
-            //setResponse({loading: false});
             setLoading(false);
             return
         }
@@ -175,11 +189,13 @@ function ConsultaNR04(){
                     type:'success',
                 });
                 setDataForm({
+                    consulta: 'nr04',
                     cnpj: '',
                     codigo_cnae1: '',
                     codigo_cnae2: '',
                     numero_trabalhadores: '',
-                    type: ''
+                    type: '',
+                    userEmail: ''
                 });
             }
         }catch(err){  
@@ -238,9 +254,17 @@ function ConsultaNR04(){
                                         <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
                                     </div>
                                 </div>
+                                <div className='label'>
+                                    <p>Deseja receber o relatório da consulta em formato PDF (opcional)?</p>
+                                </div>
+                                <div className='fields'>
+                                    <div className='field'>
+                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
+                                    </div>
+                                </div>
                                 
                                 <div className='button-area'>
-                                    <button type="submit" onClick={()=>{dataForm.type='cnpj';setLoading(true);}}>Consultar</button>
+                                    <button type="submit" onClick={()=>{dataForm.type='cnpj';}}>Consultar</button>
                                 </div>                                
                             </form>
 
@@ -262,8 +286,16 @@ function ConsultaNR04(){
                                         <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
                                     </div>
                                 </div>
+                                <div className='label'>
+                                    <p>Deseja receber o relatório da consulta em formato PDF (opcional)?</p>
+                                </div>                          
+                                <div className='fields'>
+                                    <div className='field'>
+                                        <input type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
+                                    </div>
+                                </div>
                                 <div className='button-area'>
-                                    <button type="submit" onClick={()=>{dataForm.type='cnae'; setLoading(true);}}>Consultar</button>
+                                    <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
                             </form>
 

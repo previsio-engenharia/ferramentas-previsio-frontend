@@ -74,7 +74,7 @@ const RespostaCipaCnpj = ({dados}) => {
             <div>  
                 {dados.dispensaPGR ?
                 <div className="avisoDispensaPGR">
-                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <i className="fa-solid fa-circle-exclamation"></i>
                     <p>
                         Com as características encontradas, a empresa consultada <strong>dispensa a elaboração de PGR</strong>. Também está dispensada da elaboração de PCMSO, desde que <strong>não</strong> sejam identificados riscos físicos, químicos, biológicos ou relacionados a fatores ergonômicos.
                     </p>
