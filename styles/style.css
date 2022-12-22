@@ -1,14 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&');
 
+:root{
+    --color0: white;
+    --color1: #F2F2F2;
+    --color2: #F69648;
+    --color3: #44B44A;
+    --color4: #0F8C64;
+    --color5: #09253C;
+    --color6: #061018;
+    --color7: #333;
+}
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
 }
+
 body{
     /*background-color: #09253C;*/
-    background-color: white;
+    background-color: var(--color0);
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -22,7 +34,7 @@ body{
 
 
 .navbar .logo{
-    color: white;
+    color: var(--color0);
     font-size: 35px;
     font-weight: 500;
 }
@@ -32,7 +44,7 @@ body{
     z-index: 999;
     padding: 0 0;
     font-family: 'Roboto', 'sans-serif';
-    background-color: #ffffff;
+    background-color: var(--color0);
     border-bottom: solid #000000 3px;
 }
 .navbar .max-width{
@@ -46,7 +58,7 @@ body{
 }
 .navbar .menu li a{
     display: block;
-    color: #333333;
+    color: var(--color7);
     font-size: 18px;
     font-weight: 500;
     margin-right: 25px;
@@ -61,7 +73,7 @@ body{
 }
 
 .menu-btn{
-    color: rgb(40, 40, 40);
+    color: var(--color7);
     font-size: 23px;
     cursor: pointer;
     display: none;
@@ -74,23 +86,23 @@ body{
     background-color: #f6964823;
     margin: auto;
     padding: 20px;
-    border: 3px solid #F69648;
+    border: 3px solid var(--color2);
     border-radius: 6px;
 }
 .alerta-testes h3{
-    color:#F69648;
+    color: var(--color2);
     font-weight: 600;
 }
 
 .alerta-testes p{
-    color:rgb(0, 0, 0);
+    color:var(--color7);
     font-weight: 300;
     padding: 0 20px;
     margin: 20px;
 }
 
 .alerta-testes a{
-    color:#F69648;
+    color:var(--color2);
     font-weight: 800;
     margin: 0 5px;
     text-decoration: underline;
@@ -110,7 +122,7 @@ body{
         content: "\f00d";
     }
     .navbar .menu{
-        background-color: #ffffff;
+        background-color: var(--color0);
         position: fixed;
         height: 100%;
         width: 100%;
@@ -146,7 +158,7 @@ section{
 }
 
 .top{
-    color:#09253C;
+    color:var(--color5);
     display: flex;
     /*background: url("../public/banner_top.jpg");*/
     background: url("https://raw.githubusercontent.com/joeldc94/test-nextjs/master/public/banner_top.jpg");
@@ -178,21 +190,21 @@ section{
 }
 .top .top-content a{
     display: inline-block;
-    background-color: #44B44A;
-    color: white;
+    background-color: var(--color3);
+    color: var(--color0);
     font-size: 25px;
     padding: 12px 36px;
     margin-top: 20px;
     font-weight: 300;
-    border: 2px solid #44B44A;
+    border: 2px solid var(--color3);
     border-radius: 8px;
     transition: all 0.2s ease;
 }
 .top .top-content a:hover{
     background: none;
     /*background-color: #F69648;  */  
-    color: #09253C;
-    border: 2px solid #44B44A;
+    color: var(--color6);
+    border: 2px solid var(--color3);
 }
 
 
@@ -201,13 +213,13 @@ section{
 .contact{
     /*color: white;*/
     /*background-color: #09253C;*/
-    color: #333333;
+    color: var(--color7);
     font-family: 'Roboto', 'Sans-serif';
     min-height: 85vh;
 }
 
 .contact .title{
-    color:#44B44A;
+    color:var(--color3);
     text-shadow: 1px 1px #09253C22;
     text-align: center;
     margin-bottom: 20px;
@@ -242,8 +254,12 @@ section{
 }
 
 .contact .contact-content .left a{
-    color:#44B44A;
+    color:var(--color3);
     margin-left: 20px;
+}
+.contact .contact-content .left a:hover{
+    color:var(--color2);
+    padding-left: 2px;
 }
 
 .contact .contact-content .left .icons{
@@ -260,27 +276,27 @@ section{
 }
 .contact .contact-content .row i{
     font-size: 25px;
-    color: #44B44A;
+    color: var(--color3);
 }
 .contact .contact-content .info .head{
     font-weight: 500;
 }
 .contact .contact-content .info .sub-title{
     /*color: #f6f6f6;*/
-    color:#44B44A;
+    color:var(--color3);
 }
 
 .contact .bloco-explicacao{
     margin: 0 0 30px 0;
     padding: 20px 30px;
-    background-color:#f0fff1;
-    border:3px solid #44B44A;
+    background-color:var(--color1);
+    border:3px solid var(--color3);
     border-radius: 8px;
 }
 
 
 .contact .contact-content .titulo-consulta{
-    color:#44B44A;
+    color:var(--color3);
     font-size: 20px;
     font-weight: 800;
     text-shadow: 1px 1px #09253C22;
@@ -288,7 +304,7 @@ section{
 }
 
 .right .selecionaEntrada{
-    color: #333333;
+    color: var(--color7);
     display: inline;
     width: 160px;
     height: 30px;
@@ -298,21 +314,21 @@ section{
     border-radius: 6px;
     cursor: pointer;
     flex-wrap: wrap;
-    background-color: #eeeded;
-    border: 2px solid #44B44A;
+    background-color: var(--color1);
+    border: 2px solid var(--color3);
     transition: all 0.2s ease;
 }
 
 .right .selecionaEntrada:hover{
-    color: #44B44A;
+    color: var(--color3);
     background: none;
     font-weight: 600;
 }
 
 
 .right .btnCNPJ, .right .btnCNAE{
-    color: #333;
-    background: #f2f2f2;
+    color: var(--color7);
+    background: var(--color1);
     font-weight: 400;
 }
 
@@ -348,7 +364,7 @@ section{
     background-color: #555;
     color: #fff;
     text-align: center;
-    padding: 5px 5px;
+    padding: 5px 10px;
     border-radius: 6px;
     margin: 0 0 0 40%;
     font-size: 14px;
@@ -391,7 +407,7 @@ section{
 }
 
 .right form .button-area button{
-    color: white;
+    color: var(--color0);
     display: block;
     width: 160px !important;
     height: 45px;
@@ -401,12 +417,12 @@ section{
     border-radius: 6px;
     cursor: pointer;
     flex-wrap: wrap;
-    background-color: #44B44A;
-    border: 2px solid #44B44A;
+    background-color: var(--color3);
+    border: 2px solid var(--color3);
     transition: all 0.2s ease;
 }
 .right form .button-area button:hover{
-    color: #44B44A;
+    color: var(--color3);
     background: none;
     font-weight: 600;
 }
@@ -451,14 +467,4 @@ section{
     border-style: solid;*/
     margin: 30px 0;
     min-height: 20px;
-}
-
-.contact  .alert-success{
-
-    background-color: #eaf8f2;
-    color: #0f5132;
-    /*margin: 30px 0;*/
-    border: 1px solid #dadbcc;
-    border-radius: 6px;
-    padding: 20px 10px 20px 30px;
 }

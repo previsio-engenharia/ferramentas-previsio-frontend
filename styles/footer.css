@@ -1,13 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&');
 
+:root{
+    --color0: white;
+    --color1: #F2F2F2;
+    --color2: #F69648;
+    --color3: #44B44A;
+    --color4: #0F8C64;
+    --color5: #09253C;
+    --color6: #061018;
+    --color7: #333;
+}
+
 .footer{
     /*font-family: "Open Sans", "Helvetica Neue", helvetica, arial, sans-serif;*/
     font-family: "Roboto", helvetica, sans-serif;
-    color:white;
+    color: var(--color0);
     width: 100%;
     padding: 30px;
     /*background-color: #09253C;*/
-    background-color: #061018;
+    background-color: var(--color6);
     position: static;
     bottom: 0;
     margin-bottom: 0;
@@ -29,7 +40,7 @@
     /*font-weight: 700;*/
 }
 .footer .footer-content .footer-column hr{
-    border-bottom-color: #44B44A;
+    border-bottom-color: var(--color3);
     border-width: 0 0 2px 0;
     width: 45px;
     margin-top: 5px;
@@ -45,19 +56,19 @@
     padding: 5px 0;
 }
 .footer .footer-content .footer-column .lista i{
-    color: #44B44A;
+    color: var(--color3);
     padding-right: 30px;
 }
 .footer .footer-content .footer-column .indice i{
     font-size: 12px;
-    color: #44B44A;
+    color: var(--color3);
     padding-right: 10px;
 }
 .footer .footer-content .footer-column .lista span, a{
-    color: white;
+    color: var(--color0);
 }
 .footer .footer-content .footer-column .lista a:hover{
-    color: #44B44A;
+    color: var(--color3);
     transition: all 0.3s ease;
 }
 
@@ -76,7 +87,7 @@
     .footer .footer-content .footer-column .titulo{
         font-size: 28px;
         text-align: center;
-        border-bottom: 2px solid #44B44A;  
+        border-bottom: 2px solid var(--color3);  
     }
     .footer .footer-content .footer-column hr{
         border-bottom: none;

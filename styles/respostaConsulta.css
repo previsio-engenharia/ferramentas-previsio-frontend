@@ -1,29 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Ubuntu:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&');
+
+:root{
+    --color0: white;
+    --color1: #F2F2F2;
+    --color2: #F69648;
+    --color3: #44B44A;
+    --color4: #0F8C64;
+    --color5: #09253C;
+    --color6: #061018;
+    --color7: #333;
+    --colorErrorFont: #842029;
+    --colorErrorBack: #f8d7da;
+    --colorErrorBorder: #f5c2c7;
+    --colorSuccesFont: #0f5132;
+    --colorSuccessBack: #eaf8f2;
+    --colorSuccessTitleBack: #0f5132;
+    --colorSuccessBorder: #dadbcc;
+    --colorSuccessDIRBack: #fcfdc3; /*rgb(252, 253, 195);;*/
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
 
 .resposta-erro{
     font-size: 16px;
     text-align: center;
-    color: #842029;
-    background-color: #f8d7da;
-    border: 1px solid #f5c2c7;
+    color: var(--colorErrorFont);
+    background-color: var(--colorErrorBack);
+    border: 1px solid var(--colorErrorBorder);
     border-radius: 6px;
     padding: 20px;
 }
-.alert-danger .error{
-    /**/
-}
 
 .resposta-success{
-    background-color: #eaf8f2;
-    color: #0f5132;
-    border: 1px solid #dadbcc;
+    background-color: var(--colorSuccessBack);
+    color: var(--colorSuccesFont);
+    border: 1px solid var(--colorSuccessBorder);
     border-radius: 6px;
     padding: 10px 10px 30px 10px;
     min-width: 450px;
 }
 .resposta-success .titulo1, .titulo2{
-    background-color: #0f5132;
-    color: #eee;
+    background-color: var(--colorSuccessTitleBack);
+    color: var(--color1);
     font-size: 18px;
     padding: 10px 10px;
     margin: 10px 10px;
@@ -39,7 +60,7 @@
     width: 100%;
 }
 .resposta-success table tbody td{
-    color: #333;
+    color: var(--color7);
     /*width: 100%;*/
 }
 .resposta-success table tbody td, th{
@@ -47,23 +68,50 @@
     padding: 5px;
     text-align: left;
     vertical-align: middle;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--color1);
 }
 .resposta-success table tbody .header-v{
     height: 40px;
-    color:#0f5132;
+    color:var(--colorSuccesFont);
     font-weight: 600;
     width: 250px;
 }
 
 .resposta-success table tbody tr:nth-child(odd) {
-    background-color: #fff;
+    background-color: var(--color0);
 }
 
 .resposta-success table tfoot td{
     font-size: 12px;
     padding: 10px 10px 0 10px;
     text-align: justify;
+}
+
+.avisoDispensaPGR{
+    margin: 30px 30px 0 30px;
+    padding: 20px;    
+    text-align: center;
+    background-color: var(--colorSuccessDIRBack);
+    border-radius: 5px;
+    border: 2px solid var(--color7);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.avisoDispensaPGR i{
+    font-size: 28px;
+    color: var(--colorSuccesFont);
+    padding-bottom: 15px;
+    margin: 0;
+}
+.avisoDispensaPGR p{
+    font-size: 14px;
+    padding: 10px;
+    color: var(--color7);
+}
+
+.avisoDispensaPGR strong{
+    color: var(--colorSuccesFont);
+    font-size: 16px;
+    padding: 0px 3px;;
 }
 
 @media (max-width: 500px){
@@ -103,5 +151,19 @@
     
     .resposta-success table tfoot td{
         font-size: 10px;
+    }
+
+    .avisoDispensaPGR{
+        margin: 10px 10px;
+        padding: 15px 10px;    
+        text-align: center;
+        background-color: var(--colorSuccessDIRBack);
+        border-radius: 5px;
+        border: 2px solid var(--color7);
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+    .avisoDispensaPGR p{
+        font-size: 12px;
+        padding: 5px;
     }
 }

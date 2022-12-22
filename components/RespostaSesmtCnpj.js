@@ -22,6 +22,10 @@ const RespostaSesmtCnpj = ({dados}) => {
                         <td>{dados.nomeFantasia}</td>
                     </tr>
                     <tr>
+                        <th className="header-v">Porte da Empresa</th>
+                        <td>{dados.porte}</td>
+                    </tr>
+                    <tr>
                         <th className="header-v">CNAE Principal</th>
                         <td>{dados.cod_cnae}</td>
                     </tr>
@@ -86,7 +90,18 @@ const RespostaSesmtCnpj = ({dados}) => {
                     </tr>
                     : ""}
                 </tfoot>                 
-            </table>               
+            </table>
+            <div>  
+                {dados.dispensaPGR ?
+                <div className="avisoDispensaPGR">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <p>
+                        Com as características encontradas, a empresa consultada <strong>dispensa a elaboração de PGR</strong>. Também está dispensada da elaboração de PCMSO, desde que <strong>não</strong> sejam identificados riscos físicos, químicos, biológicos ou relacionados a fatores ergonômicos.
+                    </p>
+                    <p>Para a comprovação desta dispensa, é necessária a elaboração da <strong>Declaração de Inexistência de Riscos</strong>.</p>
+                </div>
+                : ""} 
+            </div>                
         </div>
     )
 };
