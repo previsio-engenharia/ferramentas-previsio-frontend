@@ -5,7 +5,7 @@ const Menu = () => (
             <div className="max-width">
                 <div className="logo">
                     <a href="https://previsio.com.br/">
-                    <img src="https://github.com/joeldc94/test-nextjs/blob/integra%C3%A7ao-site-previsio/public/logo_previsio_azul.png?raw=true" alt="Previsio Engenharia" width="auto" height="90"></img>
+                        <img src="previsio_logo.png" alt="Previsio Engenharia" width="auto" height="90"></img>
                     </a>
                 </div>
                 <ul className="menu">
