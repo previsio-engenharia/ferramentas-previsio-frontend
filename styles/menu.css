@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&');
+
+:root{
+    --color0: white;
+    --color1: #F2F2F2;
+    --color2: #F69648;
+    --color3: #44B44A;
+    --color4: #0F8C64;
+    --color5: #09253C;
+    --color6: #061018;
+    --color7: #333;
+}
+
+.max-width{
+    max-width: 1200px;
+    padding: 0 30px;
+    margin: auto;
+}
+
+
+.navbar .logo{
+    color: var(--color0);
+    font-size: 35px;
+    font-weight: 500;
+}
+.navbar{
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    padding: 0 0;
+    font-family: 'Roboto', 'sans-serif';
+    background-color: var(--color0);
+    border-bottom: solid #000000 3px;
+}
+.navbar .max-width{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar .menu li{
+    list-style: none;
+    display: inline-flex;
+}
+.navbar .menu li a{
+    display: block;
+    color: var(--color7);
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 25px;
+}
+.navbar .menu li a:hover{
+    color: #44B44A;
+    transition: all 0.2s ease;
+}
+.navbar .menu .ferramentas{
+    color: #44B44A;
+    transition: all 0.2s ease;
+}
+
+.menu-btn{
+    color: var(--color7);
+    font-size: 23px;
+    cursor: pointer;
+    display: none;
+}
+
+@media (max-width: 1200px){
+    .menu-btn{
+        display: block;
+        z-index: 999;
+    }
+    .menu-btn i.active::before{
+        content: "\f00d";
+    }
+    .navbar .menu{
+        background-color: var(--color0);
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        left: -100%;
+        top: 0;
+        text-align: center;
+        padding-top: 80px;
+        transition: all 0.3s ease;
+    }
+    .navbar .menu.active{
+        left: 0;
+    }
+    .navbar .menu li{
+        display: block;
+    }
+    .navbar .menu li a{
+        display: inline-block;
+        margin: 13px 0;        
+        font-size: 25px;
+    }
+    .max-width{
+        max-width: 930px;
+    }
+}

@@ -32,7 +32,6 @@ body{
     margin: auto;
 }
 
-
 .navbar .logo{
     color: var(--color0);
     font-size: 35px;
@@ -79,40 +78,6 @@ body{
     display: none;
 }
 
-
-.alerta-testes{    
-    width: 80%;
-    text-align: center;
-    background-color: #f6964823;
-    margin: auto;
-    padding: 20px;
-    border: 3px solid var(--color2);
-    border-radius: 6px;
-}
-.alerta-testes h3{
-    color: var(--color2);
-    font-weight: 600;
-}
-
-.alerta-testes p{
-    color:var(--color7);
-    font-weight: 300;
-    padding: 0 20px;
-    margin: 20px;
-}
-
-.alerta-testes a{
-    color:var(--color2);
-    font-weight: 800;
-    margin: 0 5px;
-    text-decoration: underline;
-}
-
-
-
-
-
-
 @media (max-width: 1200px){
     .menu-btn{
         display: block;
@@ -148,6 +113,35 @@ body{
     }
 }
 
+
+.alerta-testes{    
+    width: 80%;
+    text-align: center;
+    background-color: #f6964823;
+    margin: auto;
+    padding: 20px;
+    border: 3px solid var(--color2);
+    border-radius: 6px;
+}
+.alerta-testes h3{
+    color: var(--color2);
+    font-weight: 600;
+}
+
+.alerta-testes p{
+    color:var(--color7);
+    font-weight: 300;
+    padding: 0 20px;
+    margin: 20px;
+}
+
+.alerta-testes a{
+    color:var(--color2);
+    font-weight: 800;
+    margin: 0 5px;
+    text-decoration: underline;
+}
+
 section{
     padding: 100px 0;
 }
@@ -169,6 +163,7 @@ section{
     font-family: "Ubuntu", "Sans-serif";
 }
 
+/*
 .top .max-width{
     width: 100%;
     display: flex;
@@ -202,11 +197,10 @@ section{
 }
 .top .top-content a:hover{
     background: none;
-    /*background-color: #F69648;  */  
     color: var(--color6);
     border: 2px solid var(--color3);
 }
-
+*/
 
 /*CONTACT*/
 

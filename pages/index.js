@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Menu from '../components/Menu';
-import AvisoTestes from '../components/AvisoTestes'
+//import AvisoTestes from '../components/AvisoTestes'
 import Footer from '../components/Footer';
 
 function Home({data}){
