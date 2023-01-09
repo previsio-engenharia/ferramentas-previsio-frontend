@@ -251,7 +251,7 @@ function ConsultaNR04(){
                                 </div>
                                 <div className='fields'>
                                     <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
+                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
                                     </div>
                                 </div>
                                 <div className='label'>
@@ -283,7 +283,7 @@ function ConsultaNR04(){
                                 </div>
                                 <div className='fields'>
                                     <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
+                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
                                     </div>
                                 </div>
                                 <div className='label'>
