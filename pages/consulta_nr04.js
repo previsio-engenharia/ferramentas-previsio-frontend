@@ -268,7 +268,7 @@ function ConsultaNR04(){
                                     </div>
                                 </div>
                                 <div className='label'>
-                                    <p>Deseja receber o relatório da consulta em formato PDF (opcional)?</p>
+                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
                                 </div>
                                 <div className='fields'>
                                     <div className='field'>
@@ -300,7 +300,7 @@ function ConsultaNR04(){
                                     </div>
                                 </div>
                                 <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta?</p>
+                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
                                 </div>                          
                                 <div className='fields'>
                                     <div className='field'>
