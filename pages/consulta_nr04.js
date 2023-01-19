@@ -10,6 +10,10 @@ import RespostaSesmtCnpj from '../components/RespostaSesmtCnpj'
 import RespostaSesmtCnae from '../components/RespostaSesmtCnae'
 import Footer from '../components/Footer';
 
+
+
+
+
 function ConsultaNR04(){
 
     const [loading, setLoading] = useState(false);
@@ -30,6 +34,8 @@ function ConsultaNR04(){
     });
 
     var [respostaDadosNR, setRespostaDadosNR] = useState({
+        tipo_consulta: '',
+        id_registro: '',
         cnpj: '',
         razaoSocial: '',
         nomeFantasia: '',
@@ -52,7 +58,8 @@ function ConsultaNR04(){
         obsSesmt2: '',
         obsSesmt3: '',
         dispensaPGR: '',
-        porte: ''
+        porte: '',
+        dateTimeReport: ''
     });    
 
     const onChangeInput = e => setDataForm({...dataForm, [e.target.name]: e.target.value});
@@ -140,6 +147,8 @@ function ConsultaNR04(){
                 
                 if(dataForm.type=='cnpj'){
                     setRespostaDadosNR({  
+                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
+                        id_registro: retorno.respostaConsultaTabelas.id_registro,
                         cod_cnae: retorno.respostaConsultaTabelas.codigoCnaeFiscal,
                         desc_cnae: retorno.respostaConsultaTabelas.descricaoCnaeFiscal,
                         cnpj: retorno.respostaConsultaTabelas.cnpj,
@@ -160,10 +169,13 @@ function ConsultaNR04(){
                         obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
                         obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
                         dispensaPGR: retorno.respostaConsultaTabelas.dispensaPGR,
-                        porte: retorno.respostaConsultaTabelas.porte
+                        porte: retorno.respostaConsultaTabelas.porte,
+                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
                     });                    
                 }else if(dataForm.type=='cnae'){
-                    setRespostaDadosNR({  
+                    setRespostaDadosNR({ 
+                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
+                        id_registro: retorno.respostaConsultaTabelas.id_registro,
                         cod_cnae: retorno.respostaConsultaTabelas.codigoCnae[0],
                         desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae[0],
                         cnpj: retorno.respostaConsultaTabelas.cnpj,
@@ -182,7 +194,8 @@ function ConsultaNR04(){
                         cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes,
                         obsSesmt1: retorno.respostaConsultaTabelas.obsSesmt1,
                         obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
-                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3
+                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
+                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
                     });  
                 }
                 setResponse({
@@ -300,9 +313,13 @@ function ConsultaNR04(){
                             </form>
 
                         </div>
+                        
                     </div> 
 
+                    
+
                     <div id='resultado-consulta'>
+                    <p id='linkteste' onClick={()=>download(respostaDadosNR)}>CLICA AQUI</p>
 
                         {loading ? <List /> : ''}
 
@@ -327,6 +344,20 @@ function ConsultaNR04(){
           
         </div>
     )
+}
+
+async function download(msg){
+    try{
+        const resposta = await fetch(process.env.SERVER_URL + 'nr04-05-relatorio-pdf', {
+            method: 'POST',
+            body: JSON.stringify(msg),
+            headers: { 'Content-Type': 'application/json' }
+        }).then({
+
+        })
+    } catch(err){
+        console.log(err);
+    }
 }
 
 export default ConsultaNR04;

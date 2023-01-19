@@ -26,6 +26,7 @@ body{
     height: 100vh;
     min-width: 250px;
 }
+
 .max-width{
     max-width: 1200px;
     padding: 0 30px;
