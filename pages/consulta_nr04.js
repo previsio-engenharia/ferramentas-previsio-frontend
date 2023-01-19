@@ -319,7 +319,6 @@ function ConsultaNR04(){
                     
 
                     <div id='resultado-consulta'>
-                    <p id='linkteste' onClick={()=>download(respostaDadosNR)}>CLICA AQUI</p>
 
                         {loading ? <List /> : ''}
 
@@ -344,20 +343,6 @@ function ConsultaNR04(){
           
         </div>
     )
-}
-
-async function download(msg){
-    try{
-        const resposta = await fetch(process.env.SERVER_URL + 'nr04-05-relatorio-pdf', {
-            method: 'POST',
-            body: JSON.stringify(msg),
-            headers: { 'Content-Type': 'application/json' }
-        }).then({
-
-        })
-    } catch(err){
-        console.log(err);
-    }
 }
 
 export default ConsultaNR04;
