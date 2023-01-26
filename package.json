@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "blob": "^0.1.0",
     "caniuse-lite": "^1.0.30001431",
-    "nanoid": "^3.3.4",
-    "dotenv": "^16.0.3",
     "client-only": "^0.0.1",
-    "loose-envify": "^1.4.0",
+    "dotenv": "^16.0.3",
     "invariant": "^2.2.4",
     "js-tokens": "^4.0.0",
+    "loose-envify": "^1.4.0",
+    "nanoid": "^3.3.4",
     "next": "^13.0.6",
     "picocolors": "^1.0.0",
     "postcss": "^8.4.14",
@@ -24,7 +25,6 @@
     "tslib": "^2.4.1",
     "warning": "^4.0.3"
   },
-  "devDependencies": {},
   "scripts": {
     "dev": "next dev",
     "build": "next build",
