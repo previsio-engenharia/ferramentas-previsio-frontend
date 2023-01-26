@@ -28,9 +28,9 @@ function Registros(){
                 .then(async (res)=>{
                     let resposta = await res.text();
                     if(res.status == 400 || res.status == 401){
-                        alert(resposta)
+                        alert(resposta);
                     } else if(res.status == 200){
-                        let blob = new Blob([res], { type: 'text/csv' });
+                        let blob = new Blob([resposta], { type: 'text/csv' });
                         //const downloadLink = downloadBlob(blob, 'consultasNR04eNR05.csv');
             
                         const filename = 'consultasNR04eNR05.csv';
@@ -87,7 +87,7 @@ function Registros(){
                             login: '',
                             senha: ''
                         })
-                    return;      
+                        return;      
                     } 
                 });
                 
@@ -95,7 +95,7 @@ function Registros(){
                 throw err;
             }
         }
-      }
+    }
 
 
     return(
