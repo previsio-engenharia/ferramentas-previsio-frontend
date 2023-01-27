@@ -1,11 +1,18 @@
+import Image from 'next/image';
+import logoPrevisio from '../public/previsio_logo.png'
+
 const Menu = () => (
-    
     <div>        
         <nav className="navbar">
             <div className="max-width">
                 <div className="logo">
                     <a href="https://previsio.com.br/">
-                        <img src="previsio_logo.png" alt="Previsio Engenharia" width="auto" height="90"></img>
+                        <Image 
+                            src={logoPrevisio} alt='logo da empresa'
+                            height={90}
+                            width='auto'
+                            priority
+                        />
                     </a>
                 </div>
                 <ul className="menu">
