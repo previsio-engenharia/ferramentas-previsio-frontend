@@ -25,7 +25,7 @@ function ConsultaGR(){
         codigo_cnae2: '',
         //numero_trabalhadores: '',
         type: '',
-        //userEmail: ''
+        userEmail: ''
     });
 
     const [response, setResponse] = useState({
@@ -71,7 +71,7 @@ function ConsultaGR(){
         //indica que não deve recarregar a página
         e.preventDefault(); 
 
-        /*
+        
         if(dataForm.userEmail.length > 0){
             var emailRegex = /\S+@\S+\.\S+/
             if(!dataForm.userEmail.match(emailRegex)){
@@ -80,8 +80,7 @@ function ConsultaGR(){
                 setLoading(false);
                 return
             }
-        } 
-        */       
+        }       
        
         //verifica inicialmente se o CNPJ foi inserido corretamente
         if(dataForm.type == 'cnpj'){
@@ -201,7 +200,7 @@ function ConsultaGR(){
                     codigo_cnae2: '',
                     //numero_trabalhadores: '',
                     type: '',
-                    //userEmail: ''
+                    userEmail: ''
                 });
             }
         }catch(err){  
@@ -256,7 +255,14 @@ function ConsultaGR(){
                                     <InputMask type="text" name="cnpj" mask="99.999.999/9999-99" placeholder="Digite o CNPJ da empresa" onChange={onChangeInput} value={dataForm.cnpj}/>
                                     </div>
                                 </div>
-                                
+                                <div className='label'>
+                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
+                                </div>
+                                <div className='fields'>
+                                    <div className='field'>
+                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
+                                    </div>
+                                </div>
                                 <div className='button-area'>
                                     <button type="submit" onClick={()=>{dataForm.type='cnpj';}}>Consultar</button>
                                 </div>                                
@@ -275,7 +281,14 @@ function ConsultaGR(){
                                         <InputMask type="text" name="codigo_cnae2" placeholder="Digite o CNAE preponderante da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae2}/>
                                     </div>
                                 </div>
-                                
+                                <div className='label'>
+                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
+                                </div>                          
+                                <div className='fields'>
+                                    <div className='field'>
+                                        <input type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
+                                    </div>
+                                </div>
                                 <div className='button-area'>
                                     <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
