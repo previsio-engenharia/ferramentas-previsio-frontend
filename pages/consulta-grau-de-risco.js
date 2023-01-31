@@ -6,26 +6,26 @@ import ContentLoader, {List} from 'react-content-loader';
 import Menu from '../components/Menu';
 import AvisoTestes from '../components/AvisoTestes'
 import RespostaErro from '../components/RespostaErro'
-import RespostaSesmtCnpj from '../components/RespostaSesmtCnpj'
-import RespostaSesmtCnae from '../components/RespostaSesmtCnae'
+import RespostaGrCnpj from '../components/RespostaGrCnpj'
+import RespostaGrCnae from '../components/RespostaGrCnae'
 import Footer from '../components/Footer';
 
 
 
 
 
-function ConsultaNR04(){
+function ConsultaGR(){
 
     const [loading, setLoading] = useState(false);
 
     const [dataForm, setDataForm] = useState({
-        consulta: 'nr04',
+        consulta: 'gr',
         cnpj: '',
         codigo_cnae1: '',
         codigo_cnae2: '',
-        numero_trabalhadores: '',
+        //numero_trabalhadores: '',
         type: '',
-        userEmail: ''
+        //userEmail: ''
     });
 
     const [response, setResponse] = useState({
@@ -71,15 +71,7 @@ function ConsultaNR04(){
         //indica que não deve recarregar a página
         e.preventDefault(); 
 
-        //verifica numero de funcionários
-        if(dataForm.numero_trabalhadores == 0 || dataForm.numero_trabalhadores == ""){
-            //nroFuncOk = true;
-            alert('Erro: Insira o número de funcionários.');
-            //setResponse({loading: false}); 
-            setLoading(false);
-            return
-        }
-
+        /*
         if(dataForm.userEmail.length > 0){
             var emailRegex = /\S+@\S+\.\S+/
             if(!dataForm.userEmail.match(emailRegex)){
@@ -88,7 +80,8 @@ function ConsultaNR04(){
                 setLoading(false);
                 return
             }
-        }        
+        } 
+        */       
        
         //verifica inicialmente se o CNPJ foi inserido corretamente
         if(dataForm.type == 'cnpj'){
@@ -176,12 +169,12 @@ function ConsultaNR04(){
                     setRespostaDadosNR({ 
                         tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
                         id_registro: retorno.respostaConsultaTabelas.id_registro,
-                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnae[0],
-                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae[0],
+                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnae,
+                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae,
                         cnpj: retorno.respostaConsultaTabelas.cnpj,
                         razaoSocial: retorno.respostaConsultaTabelas.razaoSocial,
                         nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,
-                        grau_risco: retorno.respostaConsultaTabelas.maiorGrauRisco,
+                        grau_risco: retorno.respostaConsultaTabelas.graudeRisco,
                         nro_trabalhadores: retorno.respostaConsultaTabelas.nroTrabalhadores,
                         faixa_nro_trabalhadores_sesmt: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
                         nro_tecnico_seg: retorno.respostaConsultaTabelas.tecnicoSeg,
@@ -202,13 +195,13 @@ function ConsultaNR04(){
                     type:'success',
                 });
                 setDataForm({
-                    consulta: 'nr04',
+                    consulta: 'gr',
                     cnpj: '',
                     codigo_cnae1: '',
                     codigo_cnae2: '',
-                    numero_trabalhadores: '',
+                    //numero_trabalhadores: '',
                     type: '',
-                    userEmail: ''
+                    //userEmail: ''
                 });
             }
         }catch(err){  
@@ -226,30 +219,31 @@ function ConsultaNR04(){
     return(
         <div>
             <Head>
-                <meta name="description" content="Previsio Engenharia: Consulta NR04: Constituição de Equipe SESMT"/>
+                <meta name="description" content="Previsio Engenharia: Consulta GR: Grau de Risco"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <title>Consulta NR04 - Previsio Engenharia</title>
+                <meta name="keywords" content="grau de risco, nr04, consulta grau de risco"></meta>
+                <title>Consulta GR - Previsio Engenharia</title>
             </Head>
 
             <Menu/>
             <section className='contact'>
                 <div className='max-width'>
-                    <h2 className='title'>Consulta NR04: Equipe SESMT</h2>
+                    <h2 className='title'>Consulta GR: Grau de Risco</h2>
                     <AvisoTestes/>
                     <div className='contact-content'>
                         <div className='column left'>
                             <div className='bloco-explicacao'>
-                                <h3 className='titulo-consulta'>NR04</h3>
-                                <p>Esta Norma estabelece os parâmetros e os requisitos para constituição e manutenção dos Serviços Especializados em Segurança e Medicina do Trabalho - SESMT, com a finalidade de promover a saúde e proteger a integridade do trabalhador</p>
+                                <h3 className='titulo-consulta'>GR: GRAU DE RISCO</h3>
+                                <p>O Grau de Risco de uma empresa é definido na NR04, classificado em 4 níveis, de 1 a 4, e indica a intensidade dos riscos de caráter físico, químico, biológico, ergonômicos e acidentais que os trabalhadores podem estar expostos.</p>
                                 <a target="_blank" href="https://www.gov.br/trabalho-e-previdencia/pt-br/composicao/orgaos-especificos/secretaria-de-trabalho/inspecao/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-04.pdf"><i className="fa-sharp fa-solid fa-arrow-right"></i> Acesse a norma completa</a>
                             </div>
                         </div>
 
                         <div className='column right'>
                             <div className='titulo-consulta'>
-                                Consultas: Equipe SESMT                              
+                                Consultas: Grau de Risco                         
                             </div>
-                            <p>Com esta ferramenta é possível descobrir rapidamente a composição da equipe SESMT, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
+                            <p>Com esta ferramenta é possível descobrir rapidamente o grau de risco de uma empresa de acordo com as normas vigentes. Indique o CNPJ da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
                             <div>
                                 <button className='selecionaEntrada btnCNPJ' >Consultar com CNPJ</button>
                                 <button className='selecionaEntrada btnCNAE' >Consultar com CNAE</button>
@@ -260,19 +254,6 @@ function ConsultaNR04(){
                                 <div className='fields'>
                                     <div className='field'>
                                     <InputMask type="text" name="cnpj" mask="99.999.999/9999-99" placeholder="Digite o CNPJ da empresa" onChange={onChangeInput} value={dataForm.cnpj}/>
-                                    </div>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
                                     </div>
                                 </div>
                                 
@@ -294,19 +275,7 @@ function ConsultaNR04(){
                                         <InputMask type="text" name="codigo_cnae2" placeholder="Digite o CNAE preponderante da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae2}/>
                                     </div>
                                 </div>
-                                <div className='fields'>
-                                    <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>                          
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
-                                    </div>
-                                </div>
+                                
                                 <div className='button-area'>
                                     <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
@@ -327,10 +296,10 @@ function ConsultaNR04(){
                         : ""}
 
                         {!loading && response.type === 'success' && respostaDadosNR.cnpj ? 
-                            <RespostaSesmtCnpj dados={respostaDadosNR}/> : ""} 
+                            <RespostaGrCnpj dados={respostaDadosNR}/> : ""} 
 
                         {!loading && response.type === 'success' && !respostaDadosNR.cnpj ? 
-                            <RespostaSesmtCnae dados={respostaDadosNR}/> : ""} 
+                            <RespostaGrCnae dados={respostaDadosNR}/> : ""} 
                     </div>
 
                 </div>
@@ -345,4 +314,4 @@ function ConsultaNR04(){
     )
 }
 
-export default ConsultaNR04;
+export default ConsultaGR;

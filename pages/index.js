@@ -1,9 +1,10 @@
+import Link from 'next/link';
 import Head from 'next/head';
 import Menu from '../components/Menu';
 //import AvisoTestes from '../components/AvisoTestes'
 import Footer from '../components/Footer';
 
-function Home({data}){
+function Home(){
     return(
         <div>
             <Head>
@@ -22,8 +23,9 @@ function Home({data}){
                                 Normas Regulamentadoras (NRs)                             
                             </div>
                             <ul className='lista-ferramentas'>
-                                <br/><li><a target="_self" href="/consulta_nr04"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-04: Consulta equipe SESMT</a></li>
-                                <br/><li><a target="_self" href="/consulta_nr05"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-05: Consulta equipe CIPA</a></li>
+                                <br/><li><Link target="_self" href="/consulta-grau-de-risco"><i className="fa-sharp fa-solid fa-arrow-right"></i> GR: Consulta Grau de Risco</Link></li>
+                                <br/><li><Link target="_self" href="/consulta-nr04"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-04: Consulta equipe SESMT</Link></li>
+                                <br/><li><Link target="_self" href="/consulta-nr05"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-05: Consulta equipe CIPA</Link></li>
                             </ul>
                         </div>
                         <div className='column right'>

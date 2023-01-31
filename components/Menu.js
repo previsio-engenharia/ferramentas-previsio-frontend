@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import logoPrevisio from '../public/previsio_logo.png'
 
 const Menu = () => (
@@ -28,7 +29,7 @@ const Menu = () => (
 
                     <li><a href="https://previsio.com.br/downloads/" className="menu-item downloads">Downloads</a></li>
 
-                    <li><a href="/" className="menu-item ferramentas">Ferramentas</a></li>
+                    <li><Link href="/" className="menu-item ferramentas">Ferramentas</Link></li>
 
                     <li><a href="https://previsio.com.br/contato/" className="menu-item contato">Contato</a></li>
 

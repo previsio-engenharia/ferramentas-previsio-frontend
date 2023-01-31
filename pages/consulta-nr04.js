@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, createContext } from 'react';
 import Head from 'next/head';
 import InputMask from 'react-input-mask';
 import ContentLoader, {List} from 'react-content-loader';
@@ -6,14 +6,20 @@ import ContentLoader, {List} from 'react-content-loader';
 import Menu from '../components/Menu';
 import AvisoTestes from '../components/AvisoTestes'
 import RespostaErro from '../components/RespostaErro'
-import RespostaCipaCnpj from '../components/RespostaCipaCnpj'
-import RespostaCipaCnae from '../components/RespostaCipaCnae'
+import RespostaSesmtCnpj from '../components/RespostaSesmtCnpj'
+import RespostaSesmtCnae from '../components/RespostaSesmtCnae'
 import Footer from '../components/Footer';
 
-function ConsultaNR05(){
+
+
+
+
+function ConsultaNR04(){
+
+    const [loading, setLoading] = useState(false);
 
     const [dataForm, setDataForm] = useState({
-        consulta: 'nr05',
+        consulta: 'nr04',
         cnpj: '',
         codigo_cnae1: '',
         codigo_cnae2: '',
@@ -21,7 +27,6 @@ function ConsultaNR05(){
         type: '',
         userEmail: ''
     });
-    const [loading, setLoading] = useState(false);
 
     const [response, setResponse] = useState({
         type: '',
@@ -29,11 +34,15 @@ function ConsultaNR05(){
     });
 
     var [respostaDadosNR, setRespostaDadosNR] = useState({
+        tipo_consulta: '',
+        id_registro: '',
         cnpj: '',
         razaoSocial: '',
         nomeFantasia: '',
         cod_cnae: '',
         desc_cnae: '',
+        codigoCnaeFiscal: '',
+        descricaoCnaeFiscal: '',
         grau_risco: '',
         nro_trabalhadores: '',
         faixa_nro_trabalhadores_sesmt: '',
@@ -45,9 +54,13 @@ function ConsultaNR05(){
         faixa_nro_trabalhadores_cipa: '',
         cipa_efetivos: '',
         cipa_suplentes: '',
+        obsSesmt1: '',
+        obsSesmt2: '',
+        obsSesmt3: '',
         dispensaPGR: '',
-        porte: ''
-    });
+        porte: '',
+        dateTimeReport: ''
+    });    
 
     const onChangeInput = e => setDataForm({...dataForm, [e.target.name]: e.target.value});
 
@@ -56,12 +69,13 @@ function ConsultaNR05(){
         setLoading(true);
 
         //indica que não deve recarregar a página
-        e.preventDefault();
+        e.preventDefault(); 
 
         //verifica numero de funcionários
         if(dataForm.numero_trabalhadores == 0 || dataForm.numero_trabalhadores == ""){
             //nroFuncOk = true;
             alert('Erro: Insira o número de funcionários.');
+            //setResponse({loading: false}); 
             setLoading(false);
             return
         }
@@ -74,8 +88,8 @@ function ConsultaNR05(){
                 setLoading(false);
                 return
             }
-        }
-        
+        }        
+       
         //verifica inicialmente se o CNPJ foi inserido corretamente
         if(dataForm.type == 'cnpj'){
             var cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
@@ -83,6 +97,7 @@ function ConsultaNR05(){
             //necessário checar se o tamanho está correto. Checado com o regex
             if(!dataForm.cnpj.match(cnpjRegex)){
                 alert('Erro: Insira o CNPJ no formato correto.');
+                //setResponse({loading: false}); 
                 setLoading(false);
                 return
             }
@@ -97,7 +112,8 @@ function ConsultaNR05(){
             //necessário checar se o tamanho está correto. Checado com o regex
             if(!dataForm.codigo_cnae1.match(cnaeRegex) && !dataForm.codigo_cnae2.match(cnaeRegex)){
                 alert('Erro: Insira um código CNAE válido');
-                setLoading(false);
+                //setResponse({loading: false});
+                setLoading(false); 
                 return                                
             }
             else{
@@ -109,7 +125,7 @@ function ConsultaNR05(){
             setLoading(false);
             return
         }
-
+        
         //se deu certo até aqui, realiza o POST
         try{
             const res = await fetch(process.env.SERVER_URL + 'nr04-05-consulta', {
@@ -117,11 +133,9 @@ function ConsultaNR05(){
                 body: JSON.stringify(dataForm),
                 headers: { 'Content-Type': 'application/json' }
             });
-            //console.log(dataForm);
             
             const retorno = await res.json();
-            console.log(retorno.respostaConsultaTabelas);
-            //console.log(responseEnv.sesmt_table[0]);
+            //console.log(retorno.respostaConsultaTabelas);
             
             if(retorno.respostaConsultaTabelas.erro){
                 setResponse({
@@ -129,11 +143,14 @@ function ConsultaNR05(){
                     mensagem: retorno.respostaConsultaTabelas.mensagem                        
                 });
             }
-            else{
+            else{                
+                
                 if(dataForm.type=='cnpj'){
-                    setRespostaDadosNR({ 
+                    setRespostaDadosNR({  
+                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
+                        id_registro: retorno.respostaConsultaTabelas.id_registro,
                         cod_cnae: retorno.respostaConsultaTabelas.codigoCnaeFiscal,
-                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnaeFiscal,                   
+                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnaeFiscal,
                         cnpj: retorno.respostaConsultaTabelas.cnpj,
                         razaoSocial: retorno.respostaConsultaTabelas.razaoSocial,
                         nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,
@@ -148,18 +165,23 @@ function ConsultaNR05(){
                         faixa_nro_trabalhadores_cipa: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
                         cipa_efetivos: retorno.respostaConsultaTabelas.cipaEfetivos,
                         cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes,
+                        obsSesmt1: retorno.respostaConsultaTabelas.obsSesmt1,
+                        obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
+                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
                         dispensaPGR: retorno.respostaConsultaTabelas.dispensaPGR,
-                        porte: retorno.respostaConsultaTabelas.porte
-                    });
-                }else 
-                if(dataForm.type=='cnae'){
-                    setRespostaDadosNR({
-                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnae[0],
-                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae[0],
+                        porte: retorno.respostaConsultaTabelas.porte,
+                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
+                    });                    
+                }else if(dataForm.type=='cnae'){
+                    setRespostaDadosNR({ 
+                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
+                        id_registro: retorno.respostaConsultaTabelas.id_registro,
+                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnae,
+                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae,
                         cnpj: retorno.respostaConsultaTabelas.cnpj,
                         razaoSocial: retorno.respostaConsultaTabelas.razaoSocial,
-                        nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,                        
-                        grau_risco: retorno.respostaConsultaTabelas.maiorGrauRisco,
+                        nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,
+                        grau_risco: retorno.respostaConsultaTabelas.graudeRisco,
                         nro_trabalhadores: retorno.respostaConsultaTabelas.nroTrabalhadores,
                         faixa_nro_trabalhadores_sesmt: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
                         nro_tecnico_seg: retorno.respostaConsultaTabelas.tecnicoSeg,
@@ -169,14 +191,18 @@ function ConsultaNR05(){
                         nro_medico: retorno.respostaConsultaTabelas.medico,
                         faixa_nro_trabalhadores_cipa: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
                         cipa_efetivos: retorno.respostaConsultaTabelas.cipaEfetivos,
-                        cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes
-                    });
+                        cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes,
+                        obsSesmt1: retorno.respostaConsultaTabelas.obsSesmt1,
+                        obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
+                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
+                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
+                    });  
                 }
                 setResponse({
                     type:'success',
                 });
                 setDataForm({
-                    consulta: 'nr05',
+                    consulta: 'nr04',
                     cnpj: '',
                     codigo_cnae1: '',
                     codigo_cnae2: '',
@@ -185,8 +211,8 @@ function ConsultaNR05(){
                     userEmail: ''
                 });
             }
-        }catch(err){   
-            setLoading(false);         
+        }catch(err){  
+            setLoading(false);    
             setResponse({
                 type:'error',
                 mensagem:'Erro: não foi possível realizar a consulta. Tente novamente mais tarde.'
@@ -200,31 +226,30 @@ function ConsultaNR05(){
     return(
         <div>
             <Head>
-                <meta name="description" content="Previsio Engenharia: Consulta NR-05: Constituição de Equipe CIPA"/>
+                <meta name="description" content="Previsio Engenharia: Consulta NR04: Constituição de Equipe SESMT"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <title>Consulta NR05 - Previsio Engenharia</title>
+                <title>Consulta NR04 - Previsio Engenharia</title>
             </Head>
 
             <Menu/>
             <section className='contact'>
                 <div className='max-width'>
-                    <h2 className='title'>Consulta NR05: Equipe CIPA</h2>
+                    <h2 className='title'>Consulta NR04: Equipe SESMT</h2>
                     <AvisoTestes/>
                     <div className='contact-content'>
-                        
                         <div className='column left'>
                             <div className='bloco-explicacao'>
-                                <h3 className='titulo-consulta'>NR05</h3>
-                                <p>Esta Norma estabelece os parâmetros e os requisitos da Comissão Interna de Prevenção de Acidentes – CIPA, tendo por objetivo a prevenção de acidentes e doenças relacionadas ao trabalho, de modo a tornar compatível, permanentemente, o trabalho com a preservação da vida e promoção da saúde do trabalhador.</p>
-                                <a target="_blank" href="https://www.gov.br/trabalho-e-previdencia/pt-br/composicao/orgaos-especificos/secretaria-de-trabalho/inspecao/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-05-atualizada-2021-1.pdf"><i className="fa-sharp fa-solid fa-arrow-right"></i> Acesse a norma completa</a>
+                                <h3 className='titulo-consulta'>NR04</h3>
+                                <p>Esta Norma estabelece os parâmetros e os requisitos para constituição e manutenção dos Serviços Especializados em Segurança e Medicina do Trabalho - SESMT, com a finalidade de promover a saúde e proteger a integridade do trabalhador</p>
+                                <a target="_blank" href="https://www.gov.br/trabalho-e-previdencia/pt-br/composicao/orgaos-especificos/secretaria-de-trabalho/inspecao/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-04.pdf"><i className="fa-sharp fa-solid fa-arrow-right"></i> Acesse a norma completa</a>
                             </div>
                         </div>
 
                         <div className='column right'>
                             <div className='titulo-consulta'>
-                                Composição da Equipe da CIPA                                
+                                Consultas: Equipe SESMT                              
                             </div>
-                            <p>Com esta ferramenta, é possível descobrir rapidamente a composição necessária da equipe da CIPA, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
+                            <p>Com esta ferramenta é possível descobrir rapidamente a composição da equipe SESMT, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
                             <div>
                                 <button className='selecionaEntrada btnCNPJ' >Consultar com CNPJ</button>
                                 <button className='selecionaEntrada btnCNAE' >Consultar com CNAE</button>
@@ -247,11 +272,12 @@ function ConsultaNR05(){
                                 </div>
                                 <div className='fields'>
                                     <div className='field'>
-                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" min="1" step="1" onChange={onChangeInput} value={dataForm.userEmail}/>
+                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
                                     </div>
                                 </div>
+                                
                                 <div className='button-area'>
-                                <button type="submit" onClick={()=>{dataForm.type='cnpj';}}>Consultar</button>
+                                    <button type="submit" onClick={()=>{dataForm.type='cnpj';}}>Consultar</button>
                                 </div>                                
                             </form>
 
@@ -270,7 +296,7 @@ function ConsultaNR05(){
                                 </div>
                                 <div className='fields'>
                                     <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
+                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
                                     </div>
                                 </div>
                                 <div className='label'>
@@ -287,7 +313,10 @@ function ConsultaNR05(){
                             </form>
 
                         </div>
+                        
                     </div> 
+
+                    
 
                     <div id='resultado-consulta'>
 
@@ -298,10 +327,10 @@ function ConsultaNR05(){
                         : ""}
 
                         {!loading && response.type === 'success' && respostaDadosNR.cnpj ? 
-                            <RespostaCipaCnpj dados={respostaDadosNR}/> : ""} 
+                            <RespostaSesmtCnpj dados={respostaDadosNR}/> : ""} 
 
                         {!loading && response.type === 'success' && !respostaDadosNR.cnpj ? 
-                            <RespostaCipaCnae dados={respostaDadosNR}/> : ""} 
+                            <RespostaSesmtCnae dados={respostaDadosNR}/> : ""} 
                     </div>
 
                 </div>
@@ -311,9 +340,9 @@ function ConsultaNR05(){
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="custom.js"></script>
-         
+          
         </div>
     )
 }
 
-export default ConsultaNR05;
+export default ConsultaNR04;
