@@ -221,6 +221,7 @@ function ConsultaGR(){
                 <meta name="description" content="Previsio Engenharia: Consulta GR: Grau de Risco"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
                 <meta name="keywords" content="grau de risco, nr04, consulta grau de risco"></meta>
+                <script type="text/javascript" src="custom.js"/>
                 <title>Consulta GR - Previsio Engenharia</title>
             </Head>
 
@@ -321,7 +322,6 @@ function ConsultaGR(){
             <Footer/>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-            <script src="custom.js"></script>
           
         </div>
     )

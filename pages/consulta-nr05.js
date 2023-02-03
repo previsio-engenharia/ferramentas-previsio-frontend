@@ -202,6 +202,7 @@ function ConsultaNR05(){
             <Head>
                 <meta name="description" content="Previsio Engenharia: Consulta NR-05: Constituição de Equipe CIPA"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+                <script type="text/javascript" src="custom.js"/>
                 <title>Consulta NR05 - Previsio Engenharia</title>
             </Head>
 
@@ -310,8 +311,7 @@ function ConsultaNR05(){
             <Footer/>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-            <script src="custom.js"></script>
-         
+            
         </div>
     )
 }
