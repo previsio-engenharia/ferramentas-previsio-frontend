@@ -219,7 +219,7 @@ function ConsultaNR04(){
             console.log(err);
         }
         setLoading(false);
-        document.getElementById("resultado-consulta").scrollIntoView({behavior: 'smooth'})
+        document.getElementById("resultado-consulta").scrollIntoView({block: "center", behavior: "smooth"})
     }
 
     return(        
