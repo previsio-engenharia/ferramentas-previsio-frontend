@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Footer = () => (
     
     <footer className="footer">
@@ -24,22 +26,22 @@ const Footer = () => (
                     <hr/>
                     <ul className='lista indice'>
                         <li>
-                            <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/">Início</a>
+                            <i className="fa-regular fa-circle" /><a href="https://previsio.com.br/">Início</a>
                         </li>
                         <li>
-                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/seguranca-do-trabalho/">Soluções e Serviços</a>
+                            <i className="fa-regular fa-circle" /><a href="https://previsio.com.br/seguranca-do-trabalho/">Soluções e Serviços</a>
                         </li>
                         <li>
-                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/artigos/">Artigos</a>
+                            <i className="fa-regular fa-circle" /><a href="https://previsio.com.br/artigos/">Artigos</a>
                         </li>
                         <li>
-                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/downloads/">Downloads</a>
+                            <i className="fa-regular fa-circle" /><a href="https://previsio.com.br/downloads/">Downloads</a>
                         </li>
                         <li>
-                        <i className="fa-regular fa-circle"></i><a href="https://ferramentas.previsio.com.br">Ferramentas</a>
+                            <i className="fa-regular fa-circle" /><Link href="https://ferramentas.previsio.com.br">Ferramentas</Link>
                         </li>
                         <li>
-                        <i className="fa-regular fa-circle"></i><a href="https://previsio.com.br/contato/">Contato</a>
+                            <i className="fa-regular fa-circle" /><a href="https://previsio.com.br/contato/">Contato</a>
                         </li>
                         
                     </ul>

@@ -9,10 +9,7 @@ import RespostaErro from '../components/RespostaErro'
 import RespostaGrCnpj from '../components/RespostaGrCnpj'
 import RespostaGrCnae from '../components/RespostaGrCnae'
 import Footer from '../components/Footer';
-
-
-
-
+import { mostrarCnae, mostrarCnpj } from '../public/src/custom';
 
 function ConsultaGR(){
 
@@ -221,7 +218,6 @@ function ConsultaGR(){
                 <meta name="description" content="Previsio Engenharia: Consulta GR: Grau de Risco"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
                 <meta name="keywords" content="grau de risco, nr04, consulta grau de risco"></meta>
-                <script type="text/javascript" src="custom.js"/>
                 <title>Consulta GR - Previsio Engenharia</title>
             </Head>
 
@@ -245,9 +241,8 @@ function ConsultaGR(){
                             </div>
                             <p>Com esta ferramenta é possível descobrir rapidamente o grau de risco de uma empresa de acordo com as normas vigentes. Indique o CNPJ da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
                             <div>
-                                <button className='selecionaEntrada btnCNPJ' >Consultar com CNPJ</button>
-                                <button className='selecionaEntrada btnCNAE' >Consultar com CNAE</button>
-                                
+                                <button className='selecionaEntrada btnCNPJ' onClick={mostrarCnpj}>Consultar com CNPJ</button>
+                                <button className='selecionaEntrada btnCNAE' onClick={mostrarCnae}>Consultar com CNAE</button>
                             </div>
                             
                             <form className='formCNPJ' onSubmit={sendInfo}>
@@ -294,12 +289,8 @@ function ConsultaGR(){
                                     <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
                             </form>
-
                         </div>
-                        
-                    </div> 
-
-                    
+                    </div>                    
 
                     <div id='resultado-consulta'>
 
@@ -315,16 +306,12 @@ function ConsultaGR(){
                         {!loading && response.type === 'success' && !respostaDadosNR.cnpj ? 
                             <RespostaGrCnae dados={respostaDadosNR}/> : ""} 
                     </div>
-
                 </div>
             </section>
 
             <Footer/>
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
           
         </div>
     )
 }
-
 export default ConsultaGR;

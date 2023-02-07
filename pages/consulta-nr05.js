@@ -9,6 +9,7 @@ import RespostaErro from '../components/RespostaErro'
 import RespostaCipaCnpj from '../components/RespostaCipaCnpj'
 import RespostaCipaCnae from '../components/RespostaCipaCnae'
 import Footer from '../components/Footer';
+import { mostrarCnae, mostrarCnpj } from '../public/src/custom';
 
 function ConsultaNR05(){
 
@@ -202,7 +203,6 @@ function ConsultaNR05(){
             <Head>
                 <meta name="description" content="Previsio Engenharia: Consulta NR-05: Constituição de Equipe CIPA"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <script type="text/javascript" src="custom.js"/>
                 <title>Consulta NR05 - Previsio Engenharia</title>
             </Head>
 
@@ -227,9 +227,8 @@ function ConsultaNR05(){
                             </div>
                             <p>Com esta ferramenta, é possível descobrir rapidamente a composição necessária da equipe da CIPA, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
                             <div>
-                                <button className='selecionaEntrada btnCNPJ' >Consultar com CNPJ</button>
-                                <button className='selecionaEntrada btnCNAE' >Consultar com CNAE</button>
-                                
+                                <button className='selecionaEntrada btnCNPJ' onClick={mostrarCnpj}>Consultar com CNPJ</button>
+                                <button className='selecionaEntrada btnCNAE' onClick={mostrarCnae}>Consultar com CNAE</button>
                             </div>
                             
                             <form className='formCNPJ' onSubmit={sendInfo}>
@@ -286,7 +285,6 @@ function ConsultaNR05(){
                                     <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
                             </form>
-
                         </div>
                     </div> 
 
@@ -310,8 +308,6 @@ function ConsultaNR05(){
 
             <Footer/>
 
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-            
         </div>
     )
 }

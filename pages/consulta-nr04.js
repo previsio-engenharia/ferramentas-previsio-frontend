@@ -1,6 +1,7 @@
 import React, { useState, createContext } from 'react';
 import Head from 'next/head';
 import InputMask from 'react-input-mask';
+import Link from 'next/link';
 import ContentLoader, {List} from 'react-content-loader';
 
 import Menu from '../components/Menu';
@@ -9,9 +10,7 @@ import RespostaErro from '../components/RespostaErro'
 import RespostaSesmtCnpj from '../components/RespostaSesmtCnpj'
 import RespostaSesmtCnae from '../components/RespostaSesmtCnae'
 import Footer from '../components/Footer';
-
-
-
+import { mostrarCnae, mostrarCnpj } from '../public/src/custom';
 
 
 function ConsultaNR04(){
@@ -223,12 +222,11 @@ function ConsultaNR04(){
         document.getElementById("resultado-consulta").scrollIntoView({behavior: 'smooth'})
     }
 
-    return(
+    return(        
         <div>
             <Head>
                 <meta name="description" content="Previsio Engenharia: Consulta NR04: Constituição de Equipe SESMT"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <script type="text/javascript" src="custom.js"/>
                 <title>Consulta NR04 - Previsio Engenharia</title>
             </Head>
 
@@ -252,9 +250,8 @@ function ConsultaNR04(){
                             </div>
                             <p>Com esta ferramenta é possível descobrir rapidamente a composição da equipe SESMT, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
                             <div>
-                                <button className='selecionaEntrada btnCNPJ' >Consultar com CNPJ</button>
-                                <button className='selecionaEntrada btnCNAE' >Consultar com CNAE</button>
-                                
+                                <button className='selecionaEntrada btnCNPJ' onClick={mostrarCnpj}>Consultar com CNPJ</button>
+                                <button className='selecionaEntrada btnCNAE' onClick={mostrarCnae}>Consultar com CNAE</button>                             
                             </div>
                             
                             <form className='formCNPJ' onSubmit={sendInfo}>
@@ -312,12 +309,8 @@ function ConsultaNR04(){
                                     <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
                                 </div>
                             </form>
-
                         </div>
-                        
                     </div> 
-
-                    
 
                     <div id='resultado-consulta'>
 
@@ -338,11 +331,8 @@ function ConsultaNR04(){
             </section>
 
             <Footer/>
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             
         </div>
     )
 }
-
 export default ConsultaNR04;

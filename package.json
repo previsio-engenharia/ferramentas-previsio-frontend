@@ -9,6 +9,7 @@
     "client-only": "^0.0.1",
     "dotenv": "^16.0.3",
     "invariant": "^2.2.4",
+    "jquery": "^3.6.3",
     "js-tokens": "^4.0.0",
     "loose-envify": "^1.4.0",
     "nanoid": "^3.3.4",

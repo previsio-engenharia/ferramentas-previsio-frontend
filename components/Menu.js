@@ -1,9 +1,12 @@
+import $ from 'jquery';
+import { mostrarMenu } from '../public/src/menu.js';
 import Image from 'next/image';
 import Link from 'next/link';
 import logoPrevisio from '../public/previsio_logo.png'
 
 const Menu = () => (
-    <div>        
+    
+    <div>
         <nav className="navbar">
             <div className="max-width">
                 <div className="logo">
@@ -34,7 +37,7 @@ const Menu = () => (
                     <li><a href="https://previsio.com.br/contato/" className="menu-item contato">Contato</a></li>
 
                 </ul>
-                <div className="menu-btn">
+                <div className="menu-btn" onClick={mostrarMenu}>
                     <i className="fa-solid fa-bars"></i>
                 </div>
 

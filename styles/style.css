@@ -116,32 +116,49 @@ body{
 
 
 .alerta-testes{    
-    width: 80%;
+    width: 100%;
     text-align: center;
     background-color: #f6964823;
     margin: auto;
-    padding: 20px;
+    padding: 20px 40px;
     border: 3px solid var(--color2);
     border-radius: 6px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
 }
 .alerta-testes h3{
     color: var(--color2);
     font-weight: 600;
+    margin: 15px 0px;
 }
 
 .alerta-testes p{
     color:var(--color7);
     font-weight: 300;
-    padding: 0 20px;
-    margin: 20px;
+    margin: 15px 40px;
 }
 
 .alerta-testes a{
     color:var(--color2);
     font-weight: 800;
-    margin: 0 5px;
     text-decoration: underline;
 }
+
+.alerta-testes .btnEntendi{
+    color:var(--color2);
+    padding: 5px 10px;
+    font-weight: 800;
+    background-color: var(--color1);
+    border: 1px solid #D2D2D2;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin: 10px 10px;
+}
+.alerta-testes .btnEntendi:hover{
+    background-color: white;
+    border: 1px solid var(--color2);
+    cursor: pointer;
+}
+
 
 section{
     padding: 100px 0;
@@ -215,7 +232,7 @@ section{
 
 .contact .title{
     color:var(--color3);
-    text-shadow: 1px 1px #09253C22;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-bottom: 20px;
     padding-top: 20px;
@@ -240,6 +257,7 @@ section{
 
 .contact .contact-content .left p{
     text-align: justify;
+    margin-bottom: 10px;
 }
 
 .contact .contact-content .left li{
@@ -250,15 +268,12 @@ section{
 
 .contact .contact-content .left a{
     color:var(--color3);
-    margin-left: 20px;
+    margin-bottom: 10px;
+    /*margin-left: 20px;*/
 }
 .contact .contact-content .left a:hover{
     color:var(--color2);
-    padding-left: 2px;
-}
-
-.contact .contact-content .left .icons{
-    margin: 10px 0;
+    /*padding-left: 2px;*/
 }
 
 .contact .contact-content .row{
@@ -287,6 +302,7 @@ section{
     background-color:var(--color1);
     border:3px solid var(--color3);
     border-radius: 8px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -295,10 +311,20 @@ section{
     font-size: 20px;
     font-weight: 800;
     text-shadow: 1px 1px #09253C22;
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
+}
+
+.contact .contact-content .right .titulo-consulta{
+    padding-top: 00px;
+}
+
+.contact .contact-content .right p{
+    text-align: justify;
+    margin-bottom: 10px;
 }
 
 .right .selecionaEntrada{
+    
     color: var(--color7);
     display: inline;
     width: 160px;
@@ -330,10 +356,10 @@ section{
 .contact .contact-content .right form .field{
     height: 45px;
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 .contact .contact-content .right form .name{
-    margin-right: 10px;
+    margin-bottom: 10px;
 }
 .contact .contact-content .right form .field input{
     height: 100%;
@@ -341,6 +367,7 @@ section{
     border-radius: 6px;
     outline: none;
     padding: 0 15px;
+    margin-bottom: 10px;
     font-family: 'Roboto', 'sans-serif';
     transition: all 0.3s ease;
 }
@@ -400,8 +427,7 @@ section{
 .contact .contact-content .right .label p{
     font-size: 14px;
     color: #777;
-    margin-left: 10px;
-    padding-bottom: 5px;
+    margin: 0px 0px 10px 15px;
 }
 
 .contact .contact-content .right form .button-area{
@@ -422,8 +448,9 @@ section{
     flex-wrap: wrap;
     background-color: var(--color3);
     border: 2px solid var(--color3);
-    transition: all 0.2s ease;
+    transition: all 0.2s ease;    
 }
+
 .right form .button-area button:hover{
     color: var(--color3);
     background: none;
@@ -433,7 +460,7 @@ section{
 
 .right .selecionaEntrada{
     padding: 5px;
-    margin: 10px 5px 10px 0;
+    margin: 0px 10px 10px 0;
 }
 
 .right .formCNAE{

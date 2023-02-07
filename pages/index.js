@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import Head from 'next/head';
 import Menu from '../components/Menu';
-//import AvisoTestes from '../components/AvisoTestes'
 import Footer from '../components/Footer';
 
 function Home(){
     return(
-        <div>
+        <>
             <Head>
                 <meta name="description" content="Previsio Engenharia: Ferramentas para Saúde e Segurança do Trabalho"/>
                 <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
@@ -40,14 +39,7 @@ function Home(){
                 </div>
             </section>
             <Footer/>
-
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-            <script src="custom.js"></script>
-         
-           
-        </div>
+        </>
     )
 }
-
 export default Home;
