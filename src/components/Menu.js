@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import { mostrarMenu } from '../public/src/menu.js';
+import { mostrarMenu } from 'lib/menu';
 import Image from 'next/image';
 import Link from 'next/link';
-import logoPrevisio from '../public/previsio_logo.png'
+import logoPrevisio from 'public/previsio_logo.png'
 
 const Menu = () => (
     

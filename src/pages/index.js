@@ -1,18 +1,8 @@
 import Link from 'next/link';
-import Head from 'next/head';
-import Menu from '../components/Menu';
-import Footer from '../components/Footer';
 
-function Home(){
+export default function Home(){
     return(
         <>
-            <Head>
-                <meta name="description" content="Previsio Engenharia: Ferramentas para Saúde e Segurança do Trabalho"/>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-                <title>Ferramentas - Previsio Engenharia</title>
-            </Head>
-            <Menu/>
-
             <section className='contact'>
                 <div className='max-width'>
                     <h2 className='title'>Ferramentas</h2>                    
@@ -38,8 +28,6 @@ function Home(){
                     </div>
                 </div>
             </section>
-            <Footer/>
         </>
     )
 }
-export default Home;

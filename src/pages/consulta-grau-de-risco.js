@@ -3,13 +3,13 @@ import Head from 'next/head';
 import InputMask from 'react-input-mask';
 import ContentLoader, {List} from 'react-content-loader';
 
-import Menu from '../components/Menu';
-import AvisoTestes from '../components/AvisoTestes'
-import RespostaErro from '../components/RespostaErro'
-import RespostaGrCnpj from '../components/RespostaGrCnpj'
-import RespostaGrCnae from '../components/RespostaGrCnae'
-import Footer from '../components/Footer';
-import { mostrarCnae, mostrarCnpj } from '../public/src/custom';
+import Menu from 'components/Menu';
+import AvisoTestes from 'components/AvisoTestes'
+import RespostaErro from 'components/RespostaErro'
+import RespostaGrCnpj from 'components/RespostaGrCnpj'
+import RespostaGrCnae from 'components/RespostaGrCnae'
+import Footer from 'components/Footer';
+import { mostrarCnae, mostrarCnpj } from 'lib/custom';
 
 function ConsultaGR(){
 
@@ -221,7 +221,6 @@ function ConsultaGR(){
                 <title>Consulta GR - Previsio Engenharia</title>
             </Head>
 
-            <Menu/>
             <section className='contact'>
                 <div className='max-width'>
                     <h2 className='title'>Consulta GR: Grau de Risco</h2>
@@ -308,8 +307,6 @@ function ConsultaGR(){
                     </div>
                 </div>
             </section>
-
-            <Footer/>
           
         </div>
     )

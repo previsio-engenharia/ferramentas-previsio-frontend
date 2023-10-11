@@ -1,4 +1,4 @@
-import { esconderAviso } from "../public/src/aviso";
+import { esconderAviso } from "lib/aviso";
 
 const AvisoTestes = () => (
     <div className="alerta-testes">
