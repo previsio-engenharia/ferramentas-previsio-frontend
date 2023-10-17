@@ -29,7 +29,7 @@
  * 
  * */
 
-import { relacao_cnae_gr } from "static/nr04_tables";
+import { dimensionamento_sesmt, relacao_cnae_gr } from "static/nr04_tables";
 
 
 export default async function handler(req, res) {
@@ -110,6 +110,8 @@ export default async function handler(req, res) {
         }
     }
 
+    let maiorGrauRisco = 0
+
     //consulta as infos dos cnaes na tabela de relação cnae x gr
     resposta.dadosCnaes.forEach((element, index) => {
         const consultaGrauRisco = consultaGrCnaes(element.codigo)
@@ -118,15 +120,64 @@ export default async function handler(req, res) {
             denominacao: consultaGrauRisco.denominacao,
             grauDeRisco: consultaGrauRisco.grau_risco
         }
+        if (consultaGrauRisco.grau_risco > maiorGrauRisco) {
+            maiorGrauRisco = consultaGrauRisco.grau_risco;
+        }
     });
+    if (resposta.dadosDaEmpresa) {
+        resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
+    }
 
 
-    ///AQUI PRECISAR ENCONTRAR O MAIOR GR
+    //verifica tipo da consulta solicitada. Retorna erro se não recebeu todos dados
+    switch (consulta) {
+        case 'gr':
+            res.status(200).json({
+                success: true,
+                message: 'Consulta do grau de Risco realizada com sucesso',
+                resposta,
+            });
+            break;
+        case 'nr04':
+            const consultaSesmt = consultaNr04Cnaes(maiorGrauRisco, numeroTrabalhadoresInserido)
+            if(consultaSesmt.erro){
+                res.status(400).json({
+                    success: false,
+                    message: consultaSesmt.mensagem,
+                });
+            }
+            else{
+                resposta.consultaSesmt = consultaSesmt;
+                res.status(200).json({
+                    success: true,
+                    message: 'Consulta da equipe SESMT realizada com sucesso',
+                    resposta
+                });
+            }
+            
+            break;
+        case 'nr05':
+            res.status(200).json({
+                success: false,
+                message: 'Informações faltantes na requisição',
+            });
+            break;
+        default:
+            res.status(400).json({
+                success: false,
+                message: 'Informações faltantes na requisição ',
+            })
+            break;
+    }
+
+
+
+
 
     // DEPOS VERIFICAR O TIPO DE CONSULTA (GR, NR04, NR05) E FAZER AS CONSUTLAS NECESSÁRIAS
 
-    res.status(200).json(resposta)
-    
+    //res.status(200).json(resposta)
+
 }
 
 
@@ -193,8 +244,151 @@ function consultaGrCnaes(codigoCnae) {
     return tableItem
 }
 
-async function consultaNr04Cnaes() {
+function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
 
+    var consultaSesmt = {
+        nroTrabalhadoresMinSesmt: 0,
+        nroTrabalhadoresMaxSesmt: 0,
+        tecnicoSeg: 0,
+        engenheiroSeg: 0,
+        auxTecEnfermagem: 0,
+        enfermeiro: 0,
+        medico: 0,
+        obsSesmt1: false,
+        obsSesmt2: false,
+        obsSesmt3: false,
+    }
+
+    var respostaErro = {
+        status_consulta: 0, //55, // Não foi possível realizar correspondência na tabela SESMT
+        erro: false,
+        mensagem: '',
+    }
+
+    if (nroTrabalhadores > 5000) {
+        //calcula fator de multiplicação para grupos acima de 5000
+        const gruposAcima5000 = Math.floor((nroTrabalhadores - 5000) / 4000) + Math.floor(((nroTrabalhadores - 5000) % 4000) / 2000);
+
+        const sesmt_table = dimensionamento_sesmt.filter(item => (
+            item.grau_risco == maiorGrauRisco
+            && item.nro_trabalhadores_max >= 5000));
+
+        /*
+                if (sesmt_table) {
+                    //sesmt_table.push(tableItem)
+                    //console.log("Sesmt encontrado:", sesmt_table)
+                    //console.log("[0]", sesmt_table[0])
+                    //console.log("[1]", sesmt_table[1])
+                }
+                else {
+                    //console.log("Sesmt não encontrado:")
+                }
+        
+                //console.log("SESMT TABLE:", sesmt_table)
+        */
+
+
+        if (sesmt_table.length > 0) {
+
+            //se deu tudo certo, atribui os valores consultados a variável de resposta
+            //verifica se há valores com observações (*) e cria a string de forma adequada
+
+            consultaSesmt.nroTrabalhadoresMinSesmt = 5001;
+            consultaSesmt.nroTrabalhadoresMaxSesmt = '';
+
+            if (sesmt_table[1].tecnico_seg.indexOf('*') >= 0) {
+                consultaSesmt.obsSesmt1 = true;
+                consultaSesmt.tecnicoSeg = sesmt_table[0].tecnico_seg + ' + ' + (parseInt(sesmt_table[1].tecnico_seg) * gruposAcima5000) + '*';
+            } else {
+                consultaSesmt.tecnicoSeg = parseInt(sesmt_table[0].tecnico_seg) + parseInt(sesmt_table[1].tecnico_seg) * gruposAcima5000;
+            }
+            //
+            if (sesmt_table[1].engenheiro_seg.indexOf('*') >= 0) {
+                consultaSesmt.obsSesmt1 = true;
+                consultaSesmt.engenheiroSeg = sesmt_table[0].engenheiro_seg + ' + ' + (parseInt(sesmt_table[1].engenheiro_seg) * gruposAcima5000) + '*';
+            } else {
+                consultaSesmt.engenheiroSeg = parseInt(sesmt_table[0].engenheiro_seg) + parseInt(sesmt_table[1].engenheiro_seg) * gruposAcima5000;
+            }
+            //
+            if (sesmt_table[1].aux_tec_enfermagem.indexOf('*') >= 0) {
+                consultaSesmt.obsSesmt1 = true;
+                consultaSesmt.auxTecEnfermagem = sesmt_table[0].aux_tec_enfermagem + ' + ' + (parseInt(sesmt_table[1].aux_tec_enfermagem) * gruposAcima5000) + '*';
+            } else {
+                consultaSesmt.auxTecEnfermagem = parseInt(sesmt_table[0].aux_tec_enfermagem) + parseInt(sesmt_table[1].aux_tec_enfermagem) * gruposAcima5000;
+            }
+            //
+            if (sesmt_table[1].enfermeiro.indexOf('*') >= 0) {
+                consultaSesmt.obsSesmt1 = true;
+                consultaSesmt.enfermeiro = sesmt_table[0].enfermeiro + ' + ' + (parseInt(sesmt_table[1].enfermeiro) * gruposAcima5000) + '*';
+            } else {
+                consultaSesmt.enfermeiro = parseInt(sesmt_table[0].enfermeiro) + parseInt(sesmt_table[1].enfermeiro) * gruposAcima5000;
+            }
+            //
+            if (sesmt_table[1].medico.indexOf('*') >= 0) {
+                consultaSesmt.obsSesmt1 = true;
+                consultaSesmt.medico = sesmt_table[0].medico + ' + ' + (parseInt(sesmt_table[1].medico) * gruposAcima5000) + '*';
+            } else {
+                consultaSesmt.medico = parseInt(sesmt_table[0].medico) + parseInt(sesmt_table[1].medico) * gruposAcima5000;
+            }
+            consultaSesmt.obsSesmt2 = true;
+        }
+        else {
+            //se ocorreu algum erro, preenche informações para retornar ao front
+            respostaErro.status_consulta = 55; // Não foi possível realizar correspondência na tabela SESMT
+            respostaErro.erro = true;
+            respostaErro.mensagem = 'Erro: Nenhum valor encontrado da base de dados da equipe SESMT.'
+        }
+    }
+    else {
+        const sesmt_table = dimensionamento_sesmt.find(
+            item => (
+                item.grau_risco == maiorGrauRisco
+                && item.nro_trabalhadores_max >= nroTrabalhadores
+                && item.nro_trabalhadores_min <= nroTrabalhadores))
+
+        /*
+                if (sesmt_table) {
+                    //sesmt_table.push(tableItem)
+                    //console.log("Sesmt encontrado:", sesmt_table)
+                }
+                else {
+                    //console.log("Sesmt não encontrado:")
+                }
+        */
+
+        //console.log("SESMT TABLE:", sesmt_table)
+
+        if (sesmt_table) {
+            //se deu tudo certo, atribui os valores consultados a variável de resposta
+            consultaSesmt.nroTrabalhadoresMinSesmt = sesmt_table.nro_trabalhadores_min;
+            consultaSesmt.nroTrabalhadoresMaxSesmt = sesmt_table.nro_trabalhadores_max;
+            consultaSesmt.tecnicoSeg = sesmt_table.tecnico_seg;
+            consultaSesmt.engenheiroSeg = sesmt_table.engenheiro_seg;
+            consultaSesmt.auxTecEnfermagem = sesmt_table.aux_tec_enfermagem;
+            consultaSesmt.enfermeiro = sesmt_table.enfermeiro;
+            consultaSesmt.medico = sesmt_table.medico;
+
+            const str = JSON.stringify(consultaSesmt);
+
+            //verifica se há algum valor com observação (*)
+            if (str.indexOf('"1***"') >= 0)
+                consultaSesmt.obsSesmt3 = true;
+            if (str.indexOf('"1*"') >= 0)
+                consultaSesmt.obsSesmt1 = true;
+
+        } else {
+            //se ocorreu algum erro, preenche informações para retornar ao front
+            respostaErro.status_consulta = 55; // Não foi possível realizar correspondência na tabela SESMT
+            respostaErro.erro = true;
+            respostaErro.mensagem = 'Erro: Nenhum valor encontrado da base de dados da equipe SESMT.'
+        }
+    }
+    if(respostaErro.erro){
+        return respostaErro;
+    }
+    else {
+        return consultaSesmt;
+    }
 }
 
 async function consultaNr05Cnaes() {
