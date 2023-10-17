@@ -10,8 +10,11 @@ import RespostaGrCnpj from 'components/RespostaGrCnpj'
 import RespostaGrCnae from 'components/RespostaGrCnae'
 import Footer from 'components/Footer';
 import { mostrarCnae, mostrarCnpj } from 'lib/custom';
+import { Box, Grid, Paper, Tab, Tabs, Typography } from '@mui/material';
 
 function ConsultaGR() {
+
+    const [formOption, setFormOption] = useState('cnpj')
 
     const [loading, setLoading] = useState(false);
 
@@ -213,86 +216,56 @@ function ConsultaGR() {
     }
 
     return (
-        <div>
-            <section className='contact'>
-                <div className='max-width'>
-                    <h2 className='title'>Consulta GR: Grau de Risco</h2>
-                    <AvisoTestes />
-                    <div className='contact-content'>
-                        <div className='column right'>
-                            <div className='titulo-consulta'>
-                                Consultas: Grau de Risco
-                            </div>
-                            
-                            <div>
-                                <button className='selecionaEntrada btnCNPJ' onClick={mostrarCnpj}>Consultar com CNPJ</button>
-                                <button className='selecionaEntrada btnCNAE' onClick={mostrarCnae}>Consultar com CNAE</button>
-                            </div>
+        <>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Typography variant='h3' component='h1' textAlign={'center'}>
+                        Consulta Grau de Risco
+                    </Typography>
+                </Grid>
+                <Grid item xs={0} sm={12} md={6}
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Typography variant='h6' component='h2' textAlign={'center'}>
+                        Normas Regulamentadoras (NRs)
+                    </Typography>
+                    <Typography variant='body1' component='p' textAlign={'center'} sx={{ py: 2, px: 2 }}>
+                        Lorem ipsum feugiat tincidunt aliquam mollis elit semper, metus tristique lectus himenaeos pharetra arcu ad proin, ut mattis nibh viverra est dictumst. tempor aliquam sociosqu interdum pretium leo gravida himenaeos vulputate faucibus, maecenas pharetra tristique mi ultrices tortor vitae diam senectus aptent, iaculis duis et faucibus phasellus ornare curabitur auctor. ultrices cursus enim placerat sodales massa iaculis a laoreet mollis vulputate, neque id vivamus nullam interdum eros pellentesque tincidunt nam. torquent semper elit gravida bibendum egestas aliquet metus quam, commodo nec venenatis varius in pretium molestie, fames curae purus id potenti vivamus aliquam.
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                    <Typography variant='h6' component='h2' textAlign={'center'}>
+                        Ferramentas de Consultas
+                    </Typography>
+                    <Typography variant='body1' sx={{ py: 2, px: 2 }}>
+                        Disponibilizamos ferramentas para consulta de dados das NRs.
+                    </Typography>
+                    <Tabs 
+                        centered 
+                        variant="fullWidth"
+                        onChange={(e, newValue)=>{setFormOption(newValue)}} 
+                    >
+                        <Tab label="CNPJ" value='cnpj'/>
+                        <Tab label="CNAE" value='cnae'/>
+                    </Tabs>
+                    <Grid item container xs={12}>
+                        {
+                            formOption == 'cnpj' ?
+                            (<>cnpj</>):
+                            (<>cnae</>)
+                        }
 
-                            <form className='formCNPJ' onSubmit={sendInfo}>
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <InputMask type="text" name="cnpj" mask="99.999.999/9999-99" placeholder="Digite o CNPJ da empresa" onChange={onChangeInput} value={dataForm.cnpj} />
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail} />
-                                    </div>
-                                </div>
-                                <div className='button-area'>
-                                    <button type="submit" onClick={() => { dataForm.type = 'cnpj'; }}>Consultar</button>
-                                </div>
-                            </form>
 
-                            <form className='formCNAE' onSubmit={sendInfo}>
-                                <div className='fields'>
-                                    <div className='field name tooltip'>
-                                        <span className='tooltiptext'>A atividade econômica principal é a constante no Cadastro Nacional de  Pessoa Jurídica - CNPJ.</span>
-                                        <InputMask type="text" name="codigo_cnae1" placeholder="Digite o CNAE principal da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae1} />
-                                    </div>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field name tooltip'>
-                                        <span className='tooltiptext'>A atividade econômica preponderante é aquela que ocupa o maior número de trabalhadores.</span>
-                                        <InputMask type="text" name="codigo_cnae2" placeholder="Digite o CNAE preponderante da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae2} />
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail} />
-                                    </div>
-                                </div>
-                                <div className='button-area'>
-                                    <button type="submit" onClick={() => { dataForm.type = 'cnae'; }}>Consultar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
 
-                    <div id='resultado-consulta'>
 
-                        {loading ? <List /> : ''}
 
-                        {!loading && response.type === 'error' ?
-                            <RespostaErro dados={response} />
-                            : ""}
 
-                        {!loading && response.type === 'success' && respostaDadosNR.cnpj ?
-                            <RespostaGrCnpj dados={respostaDadosNR} /> : ""}
 
-                        {!loading && response.type === 'success' && !respostaDadosNR.cnpj ?
-                            <RespostaGrCnae dados={respostaDadosNR} /> : ""}
-                    </div>
-                </div>
-            </section>
-        </div>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </>
     )
 }
 export default ConsultaGR;

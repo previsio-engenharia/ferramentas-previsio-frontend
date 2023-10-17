@@ -1,43 +1,26 @@
 /**
- * consulta: gr, nr04, nr05
- * type: cnpj, cnae
- * 
- * 
- * 
- * 1 - verifica método
- * 2 - verifica body
- *      a. consulta e type obrigatorios
- *      b. se consulta = nr04 ou nr05, nro trabalhadores obrigatorio
- * 3 - verifica CNPJ e atribui CNAEs
- *      a - se tem CNPJ, realiza fecth na api minha receita
- *      b - se não tem CNPJ, pula etapa e atruibui o(s) CNAE(s) fornecidos para busca
- *      c - se não tem nem CNPJ nem CNAE, retorna erro
- *  4 - realiza consulta na tabela relacao_cnae_gr
- *  >> obtem todos grau de risco
- *  >> encontra maior grau de risco
- * 
- *  SE consulta = GR:
- *  5 - retorna dados da empresa e dados dos CNAEs relacionados OU apenas dos CNAEs relacionados
- *  
- *  SE consulta = nr04:
- *  5 - consulta tabela dimensionamento_sesmt para encontrar equipe sesmt com maior grau de risco e nro de trabalhadores
- * 
- * SE consulta = nr05:
- *  5 - consulta tabela dimensionamento_cipa para encontrar equipe sesmt com maior grau de risco e nro de trabalhadores
- *  
- * 
- * 
- * */
+ * Códigos de status do resultado da consulta:
+    Status	Descrição
+    10	    // ok 
+    50	    // erro interno na consulta
+    51	    // não foi possivel acessar a  API para consulta CNPJ
+    52	    // CNPJ consultado na API mas não encontrado
+    53	    // Código CNAE não identificado
+    54	    // CNAE informado não encontrado no DB
+    55	    // Não foi possível realizar correspondência na tabela SESMT
+    56	    // Não foi possível realizar correspondência na tabela CIPA
+ */
 
 import { dimensionamento_sesmt, relacao_cnae_gr } from "static/nr04_tables";
-
+import { dimensionamento_cipa } from "static/nr05_tables";
 
 export default async function handler(req, res) {
     // só aceita método POST. Se receber outro retorna erro
     if (req.method != 'POST') {
-        res.status(405).json({
+        return res.status(405).json({
             success: false,
-            message: 'Método da requisição não permitido',
+            //statusConsulta:
+            mensagem: 'Método da requisição não permitido',
         })
     }
 
@@ -47,37 +30,38 @@ export default async function handler(req, res) {
     const codigoCnae1Inserido = req.body.codigo_cnae1;
     const codigoCnae2Inserido = req.body.codigo_cnae2;
     const numeroTrabalhadoresInserido = req.body.numero_trabalhadores;
-    const userEmail = req.body.userEmail;
-
-    //cria status inicial da consulta
-    let statusConsulta = 10;
+    //const userEmail = req.body.userEmail;
 
     //verifica tipo da consulta solicitada. Retorna erro se não recebeu todos dados
     switch (consulta) {
         case 'gr':
             if (!cnpjInserido && !codigoCnae1Inserido && !codigoCnae2Inserido) {
-                res.status(400).json({
+                return res.status(400).json({
                     success: false,
-                    message: 'Informações faltantes na requisição',
+                    //status_consulta:
+                    mensagem: 'Informações faltantes na requisição',
                 });
             }
             break;
         case 'nr04': case 'nr05':
             if ((!cnpjInserido && !codigoCnae1Inserido && !codigoCnae1Inserido) || !numeroTrabalhadoresInserido) {
-                res.status(400).json({
+                return res.status(400).json({
                     success: false,
-                    message: 'Informações faltantes na requisição',
+                    //status_consulta:
+                    mensagem: 'Informações faltantes na requisição',
                 });
             }
             break;
         default:
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
-                message: 'Informações faltantes na requisição ',
+                //status_consulta:
+                mensagem: 'Informações faltantes na requisição ',
             })
             break;
     }
 
+    let arrayDadosCnae = [];
     let resposta = {
         dadosCnaes: [],
     }
@@ -87,109 +71,146 @@ export default async function handler(req, res) {
         const dados = await consultaCnpj(cnpjInserido);
         if (dados.success) {
             resposta.dadosDaEmpresa = dados.dadosDaEmpresa;
-            resposta.dadosCnaes = dados.dadosCnaes;
+            arrayDadosCnae = dados.dadosCnaes;
         }
         else {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
-                message: 'Não foi possível acessar a consulta do CNPJ. Considere realizar a consulta com o código CNAE, ou tente novamente mais tarde.',
+                status_consulta: dados.status_consulta,
+                tipo_consulta: consulta,
+                mensagem: dados.mensagem,
             })
         }
-        //res.status(200).json(dados)
     }
     else {
         if (codigoCnae1Inserido) {
-            resposta.dadosCnaes.push({
+            arrayDadosCnae.push({
                 codigo: codigoCnae1Inserido,
             })
         }
         if (codigoCnae2Inserido) {
-            resposta.dadosCnaes.push({
+            arrayDadosCnae.push({
                 codigo: codigoCnae2Inserido,
             })
         }
     }
 
     let maiorGrauRisco = 0
-
+    
     //consulta as infos dos cnaes na tabela de relação cnae x gr
-    resposta.dadosCnaes.forEach((element, index) => {
+    arrayDadosCnae.forEach((element, index) => {
         const consultaGrauRisco = consultaGrCnaes(element.codigo)
-        resposta.dadosCnaes[index] = {
-            ...element,
-            denominacao: consultaGrauRisco.denominacao,
-            grauDeRisco: consultaGrauRisco.grau_risco
-        }
-        if (consultaGrauRisco.grau_risco > maiorGrauRisco) {
-            maiorGrauRisco = consultaGrauRisco.grau_risco;
+
+        if(consultaGrauRisco){
+            resposta.dadosCnaes.push({
+                codigo: element.codigo,
+                denominacao: consultaGrauRisco.denominacao,
+                grauDeRisco: consultaGrauRisco.grau_risco
+            })
+            if (consultaGrauRisco.grau_risco > maiorGrauRisco) {
+                maiorGrauRisco = consultaGrauRisco.grau_risco;
+            }
         }
     });
-    if (resposta.dadosDaEmpresa) {
-        resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
-    }
 
+    if(maiorGrauRisco == 0){
+        return res.status(400).json({
+            success: false,
+            status_consulta: 53,
+            tipo_consulta: consulta,
+            mensagem: 'Códigos CNAE não encontrados na consulta',
+        })
+    }
+    else{
+        if (resposta.dadosDaEmpresa) {
+            resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
+        }
+    }
 
     //verifica tipo da consulta solicitada. Retorna erro se não recebeu todos dados
     switch (consulta) {
         case 'gr':
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
-                message: 'Consulta do grau de Risco realizada com sucesso',
-                resposta,
+                status_consulta: 10,
+                tipo_consulta: consulta,
+                mensagem: 'Consulta do grau de Risco realizada com sucesso',
+                ...resposta,
             });
             break;
         case 'nr04':
             const consultaSesmt = consultaNr04Cnaes(maiorGrauRisco, numeroTrabalhadoresInserido)
-            if(consultaSesmt.erro){
-                res.status(400).json({
+            if (consultaSesmt.erro) {
+                return res.status(400).json({
                     success: false,
-                    message: consultaSesmt.mensagem,
+                    status_consulta: 55,
+                    tipo_consulta: consulta,
+                    mensagem: consultaSesmt.mensagem,
                 });
             }
-            else{
+            else {
                 resposta.consultaSesmt = consultaSesmt;
-                res.status(200).json({
+                return res.status(200).json({
                     success: true,
-                    message: 'Consulta da equipe SESMT realizada com sucesso',
-                    resposta
+                    status_consulta: 10,
+                    tipo_consulta: consulta,
+                    mensagem: 'Consulta da equipe SESMT realizada com sucesso',
+                    ...resposta
                 });
             }
-            
+
             break;
         case 'nr05':
-            res.status(200).json({
-                success: false,
-                message: 'Informações faltantes na requisição',
-            });
+            const consultaCipa = consultaNr05Cnaes(maiorGrauRisco, numeroTrabalhadoresInserido)
+            if (consultaCipa.erro) {
+                return res.status(400).json({
+                    success: false,
+                    status_consulta: 56,
+                    tipo_consulta: consulta,
+                    mensagem: consultaCipa.mensagem,
+                });
+            }
+            else {
+                resposta.consultaCipa = consultaCipa;
+                return res.status(200).json({
+                    success: true,
+                    status_consulta: 10,
+                    tipo_consulta: consulta,
+                    mensagem: 'Consulta da equipe CIPA realizada com sucesso',
+                    ...resposta
+                });
+            }
             break;
         default:
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
-                message: 'Informações faltantes na requisição ',
+                status_consulta: 50,
+                tipo_consulta: consulta,
+                mensagem: 'Informações faltantes na requisição ',
             })
             break;
     }
-
-
-
-
-
-    // DEPOS VERIFICAR O TIPO DE CONSULTA (GR, NR04, NR05) E FAZER AS CONSUTLAS NECESSÁRIAS
-
-    //res.status(200).json(resposta)
-
 }
 
 
-
+//funções
 
 async function consultaCnpj(cnpjInserido) {
     try {
         //GET request na API
-        console.log("Consulta o CNPJ");
+        //console.log("Consulta o CNPJ");
         const response = await fetch('https://minhareceita.org/' + cnpjInserido);
         const dadosCnpj = await response.json();
         //console.log("RESP", dadosCnpj);
+
+        if(response.status == 400){
+            //cnpj consultado não encontrado
+            return {
+                success: false,
+                status_consulta: 52,
+                mensagem: dadosCnpj.mensagem,
+            }
+        }
 
         //inicializa com cnae fiscal na posição 0
         let cnaes = [{
@@ -207,7 +228,7 @@ async function consultaCnpj(cnpjInserido) {
 
         return {
             success: true,
-            message: "Consulta api ok",
+            mensagem: "Consulta api ok",
             dadosDaEmpresa: {
                 cnpj: cnpjInserido,
                 porte: dadosCnpj.porte,
@@ -222,14 +243,10 @@ async function consultaCnpj(cnpjInserido) {
     }
     catch (error) {
         console.log(`Não conseguiu consultar CNPJ: ${error}`);
-        //status_consulta = 52; // CNPJ consultado na API mas não encontrado
-        //respostaConsultaTabelas.status = 400;
-        //respostaConsultaTabelas.erro = true;
-        //respostaConsultaTabelas.mensagem = 'Erro: não foi possível consultar o CNPJ informado';
-
         return {
             success: false,
-            message: "Erro ao consultar api"
+            status_consulta: 51,
+            mensagem: 'Não foi possível acessar a consulta do CNPJ. Considere realizar a consulta com o código CNAE, ou tente novamente mais tarde.'
         }
     }
 }
@@ -273,26 +290,10 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
             item.grau_risco == maiorGrauRisco
             && item.nro_trabalhadores_max >= 5000));
 
-        /*
-                if (sesmt_table) {
-                    //sesmt_table.push(tableItem)
-                    //console.log("Sesmt encontrado:", sesmt_table)
-                    //console.log("[0]", sesmt_table[0])
-                    //console.log("[1]", sesmt_table[1])
-                }
-                else {
-                    //console.log("Sesmt não encontrado:")
-                }
-        
-                //console.log("SESMT TABLE:", sesmt_table)
-        */
-
-
         if (sesmt_table.length > 0) {
 
             //se deu tudo certo, atribui os valores consultados a variável de resposta
             //verifica se há valores com observações (*) e cria a string de forma adequada
-
             consultaSesmt.nroTrabalhadoresMinSesmt = 5001;
             consultaSesmt.nroTrabalhadoresMaxSesmt = '';
 
@@ -346,16 +347,6 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
                 && item.nro_trabalhadores_max >= nroTrabalhadores
                 && item.nro_trabalhadores_min <= nroTrabalhadores))
 
-        /*
-                if (sesmt_table) {
-                    //sesmt_table.push(tableItem)
-                    //console.log("Sesmt encontrado:", sesmt_table)
-                }
-                else {
-                    //console.log("Sesmt não encontrado:")
-                }
-        */
-
         //console.log("SESMT TABLE:", sesmt_table)
 
         if (sesmt_table) {
@@ -383,7 +374,7 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
             respostaErro.mensagem = 'Erro: Nenhum valor encontrado da base de dados da equipe SESMT.'
         }
     }
-    if(respostaErro.erro){
+    if (respostaErro.erro) {
         return respostaErro;
     }
     else {
@@ -391,6 +382,81 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
     }
 }
 
-async function consultaNr05Cnaes() {
+function consultaNr05Cnaes(maiorGrauRisco, nroTrabalhadores) {
 
+    var consultaCipa = {
+        nroTrabalhadoresMinCipa: 0,
+        nroTrabalhadoresMaxCipa: 0,
+        cipaEfetivos: 0,
+        cipaSuplentes: 0
+    }
+
+    var respostaErro = {
+        status_consulta: 0, //55, // Não foi possível realizar correspondência na tabela SESMT
+        erro: false,
+        mensagem: '',
+    }
+
+    if (nroTrabalhadores > 10000) {
+        //calcula fator de multiplicação para grupos acima de 5000
+        var gruposAcima10000 = Math.floor((nroTrabalhadores - 10000) / 2500);
+        //console.log('CIPA: ' + gruposAcima10000.toString());
+
+        const cipa_table = dimensionamento_cipa.filter(
+            item => (
+                item.grau_risco == maiorGrauRisco
+                && item.nro_trabalhadores_max >= 10000
+            )
+        )
+
+        if (cipa_table) {
+            //se deu tudo certo, atribui os valores consultados a variável de resposta
+            consultaCipa.nroTrabalhadoresMinCipa = cipa_table[0].nro_trabalhadores_min;
+            consultaCipa.nroTrabalhadoresMaxCipa = cipa_table[0].nro_trabalhadores_max;
+            consultaCipa.cipaEfetivos = parseInt(cipa_table[0].integrantes_efetivos) + parseInt(cipa_table[1].integrantes_efetivos) * gruposAcima10000;
+            consultaCipa.cipaSuplentes = parseInt(cipa_table[0].integrantes_suplentes) + parseInt(cipa_table[1].integrantes_suplentes) * gruposAcima10000;
+
+            //Última consulta, escreve mensagem de aprovação
+            //respostaConsultaTabelas.mensagem = 'Todos dados consultados com sucesso'
+        }
+        else {
+            //se ocorreu algum erro, preenche informações para retornar ao front
+            respostaErro.status_consulta = 56; // Não foi possível realizar correspondência na tabela CIPA
+            respostaErro.erro = true;
+            respostaConsultaTabelas.mensagem = 'Erro: Nenhum valor encontrado da base de dados da equipe CIPA.'
+        }
+    }
+    else {
+        const cipa_table = dimensionamento_cipa.filter(
+            item => (
+                item.grau_risco == maiorGrauRisco
+                && item.nro_trabalhadores_max >= nroTrabalhadores
+                && item.nro_trabalhadores_min <= nroTrabalhadores
+            )
+        )
+
+        if (cipa_table) {
+            //console.log("CIPA TABLE < 10000:", cipa_table)
+            //se deu tudo certo, atribui os valores consultados a variável de resposta
+            consultaCipa.nroTrabalhadoresMinCipa = cipa_table[0].nro_trabalhadores_min;
+            consultaCipa.nroTrabalhadoresMaxCipa = cipa_table[0].nro_trabalhadores_max;
+            consultaCipa.cipaEfetivos = cipa_table[0].integrantes_efetivos;
+            consultaCipa.cipaSuplentes = cipa_table[0].integrantes_suplentes;
+
+            //Última consulta, escreve mensagem de aprovação
+            //respostaConsultaTabelas.mensagem = 'Todos dados consultados com sucesso'
+        } else {
+            //se ocorreu algum erro, preenche informações para retornar ao front
+            respostaErro.status_consulta = 56; // Não foi possível realizar correspondência na tabela CIPA
+            //respostaConsultaTabelas.status = 400;
+            respostaErro.erro = true;
+            respostaErro.mensagem = 'Erro: Nenhum valor encontrado da base de dados da equipe CIPA.'
+        }
+    }
+    if (respostaErro.erro) {
+        return respostaErro;
+    }
+    else {
+        return consultaCipa;
+    }
 }
