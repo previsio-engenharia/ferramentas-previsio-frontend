@@ -6,31 +6,47 @@ import ContentLoader, { List } from 'react-content-loader';
 import Menu from 'components/Menu';
 import AvisoTestes from 'components/AvisoTestes'
 import RespostaErro from 'components/RespostaErro'
-import RespostaGrCnpj from 'components/RespostaGrCnpj'
-import RespostaGrCnae from 'components/RespostaGrCnae'
+import RespostaGrSucesso from 'components/RespostaGrSucesso'
 import Footer from 'components/Footer';
 import { mostrarCnae, mostrarCnpj } from 'lib/custom';
-import { Box, Grid, Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Grid, Paper, Skeleton, Stack, Tab, Tabs, Typography } from '@mui/material';
+import FormCnpj from 'components/FormCnpj';
+import FormCnae from 'components/FormCnae';
 
 function ConsultaGR() {
-
-    const [formOption, setFormOption] = useState('cnpj')
-
-    const [loading, setLoading] = useState(false);
-
+    //dados do formulário (tanto cnpj quanto cnaes)
     const [dataForm, setDataForm] = useState({
         consulta: 'gr',
         cnpj: '',
         codigo_cnae1: '',
         codigo_cnae2: '',
-        type: '',
+        type: 'cnpj',
+        receberEmail: true,
         userEmail: ''
     });
+    //estado aguarda resposta da consulta
+    //const [loading, setLoading] = useState(false);
 
-    const [response, setResponse] = useState({
-        type: '',
-        mensagem: ''
+    //status da resposta da consulta
+    const [statusResponse, setStatusResponse] = useState({
+        loading: false,
+        status: '',
+        message: ''
     });
+    // função pra atualizar o loading da resposta
+    const setLoadingResponse = (status) => {
+        setStatusResponse((previousState) => ({
+            ...previousState,
+            loading: status
+        }))
+    }
+
+    /*
+        const [response, setResponse] = useState({
+            type: '',
+            mensagem: ''
+        });
+    */
 
     const [respostaDadosNR, setRespostaDadosNR] = useState({
         tipo_consulta: '',
@@ -61,34 +77,26 @@ function ConsultaGR() {
         dateTimeReport: ''
     });
 
-    const onChangeInput = e => setDataForm({ ...dataForm, [e.target.name]: e.target.value });
+    const [respostaConsulta, setRespostaConsulta] = useState()
 
     const sendInfo = async e => {
         //inicia placeholder
-        setLoading(true);
+        //setLoading(true);
+        setLoadingResponse(true);
 
         //indica que não deve recarregar a página
         e.preventDefault();
 
-        if (dataForm.userEmail.length > 0) {
-            var emailRegex = /\S+@\S+\.\S+/
-            if (!dataForm.userEmail.match(emailRegex)) {
-                alert('Erro: Insira um e-mail válido.');
-                //setResponse({loading: false}); 
-                setLoading(false);
-                return
-            }
-        }
-
         //verifica inicialmente se o CNPJ foi inserido corretamente
         if (dataForm.type == 'cnpj') {
-            var cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
+            const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
             //a mascara impede a inclusão de caracteres que não são numeros ou delimitadores
             //necessário checar se o tamanho está correto. Checado com o regex
             if (!dataForm.cnpj.match(cnpjRegex)) {
                 alert('Erro: Insira o CNPJ no formato correto.');
                 //setResponse({loading: false}); 
-                setLoading(false);
+                //setLoading(false);
+                setLoadingResponse(false);
                 return
             }
             else {
@@ -103,7 +111,8 @@ function ConsultaGR() {
             if (!dataForm.codigo_cnae1.match(cnaeRegex) && !dataForm.codigo_cnae2.match(cnaeRegex)) {
                 alert('Erro: Insira um código CNAE válido');
                 //setResponse({loading: false});
-                setLoading(false);
+                //setLoading(false);
+                setLoadingResponse(false)
                 return
             }
             else {
@@ -112,15 +121,27 @@ function ConsultaGR() {
         } else {
             //dá falha se não reconhecer nem cnpj nem cnae
             alert('Erro: Falha no envio do formulário');
-            setLoading(false);
+            //setLoading(false);
+            setLoadingResponse(false);
             return
+        }
+
+        if (dataForm.receberEmail) {
+            const emailRegex = /\S+@\S+\.\S+/
+            if (!dataForm.userEmail.match(emailRegex)) {
+                alert('Erro: Insira um e-mail válido.');
+                //setResponse({loading: false}); 
+                //setLoading(false);
+                setLoadingResponse(false);
+                return
+            }
         }
 
         console.log("Vai tentar chamar a api")
 
         //se deu certo até aqui, realiza o POST
         try {
-            const res = await fetch('/api/consultacnpj', {
+            const res = await fetch('/api/novaApi', {
                 //const res = await fetch(process.env.SERVER_URL + 'nr04-05-consulta', {
                 method: 'POST',
                 body: JSON.stringify(dataForm),
@@ -130,139 +151,206 @@ function ConsultaGR() {
             const respostaConsultaTabelas = await res.json();
             console.log("RESPOSTA:", respostaConsultaTabelas);
 
-            if (respostaConsultaTabelas.erro) {
-                setResponse({
-                    type: 'error',
-                    mensagem: respostaConsultaTabelas.mensagem
-                });
+            if (!respostaConsultaTabelas.success) {
+                setStatusResponse((previousState) => ({
+                    ...previousState,
+                    status: 'error',
+                    message: respostaConsultaTabelas.mensagem
+                }))
             }
             else {
-                if (dataForm.type == 'cnpj') {
-                    setRespostaDadosNR({
-                        tipo_consulta: respostaConsultaTabelas.tipo_consulta,
-                        id_registro: respostaConsultaTabelas.id_registro,
-                        cod_cnae: respostaConsultaTabelas.codigoCnaeFiscal,
-                        desc_cnae: respostaConsultaTabelas.descricaoCnaeFiscal,
-                        cnpj: respostaConsultaTabelas.cnpj,
-                        razaoSocial: respostaConsultaTabelas.razaoSocial,
-                        nomeFantasia: respostaConsultaTabelas.nomeFantasia,
-                        grau_risco: respostaConsultaTabelas.maiorGrauRisco,
-                        nro_trabalhadores: respostaConsultaTabelas.nroTrabalhadores,
-                        faixa_nro_trabalhadores_sesmt: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
-                        nro_tecnico_seg: respostaConsultaTabelas.tecnicoSeg,
-                        nro_engenheiro_seg: respostaConsultaTabelas.engenheiroSeg,
-                        nro_aux_tec_enfermagem: respostaConsultaTabelas.auxTecEnfermagem,
-                        nro_enfermeiro: respostaConsultaTabelas.enfermeiro,
-                        nro_medico: respostaConsultaTabelas.medico,
-                        faixa_nro_trabalhadores_cipa: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
-                        cipa_efetivos: respostaConsultaTabelas.cipaEfetivos,
-                        cipa_suplentes: respostaConsultaTabelas.cipaSuplentes,
-                        obsSesmt1: respostaConsultaTabelas.obsSesmt1,
-                        obsSesmt2: respostaConsultaTabelas.obsSesmt2,
-                        obsSesmt3: respostaConsultaTabelas.obsSesmt3,
-                        dispensaPGR: respostaConsultaTabelas.dispensaPGR,
-                        porte: respostaConsultaTabelas.porte,
-                        dateTimeReport: respostaConsultaTabelas.dateTimeReport
-                    });
-                } else if (dataForm.type == 'cnae') {
-                    setRespostaDadosNR({
-                        tipo_consulta: respostaConsultaTabelas.tipo_consulta,
-                        id_registro: respostaConsultaTabelas.id_registro,
-                        cod_cnae: respostaConsultaTabelas.codigoCnae,
-                        desc_cnae: respostaConsultaTabelas.descricaoCnae,
-                        cnpj: respostaConsultaTabelas.cnpj,
-                        razaoSocial: respostaConsultaTabelas.razaoSocial,
-                        nomeFantasia: respostaConsultaTabelas.nomeFantasia,
-                        grau_risco: respostaConsultaTabelas.graudeRisco,
-                        nro_trabalhadores: respostaConsultaTabelas.nroTrabalhadores,
-                        faixa_nro_trabalhadores_sesmt: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
-                        nro_tecnico_seg: respostaConsultaTabelas.tecnicoSeg,
-                        nro_engenheiro_seg: respostaConsultaTabelas.engenheiroSeg,
-                        nro_aux_tec_enfermagem: respostaConsultaTabelas.auxTecEnfermagem,
-                        nro_enfermeiro: respostaConsultaTabelas.enfermeiro,
-                        nro_medico: respostaConsultaTabelas.medico,
-                        faixa_nro_trabalhadores_cipa: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
-                        cipa_efetivos: respostaConsultaTabelas.cipaEfetivos,
-                        cipa_suplentes: respostaConsultaTabelas.cipaSuplentes,
-                        obsSesmt1: respostaConsultaTabelas.obsSesmt1,
-                        obsSesmt2: respostaConsultaTabelas.obsSesmt2,
-                        obsSesmt3: respostaConsultaTabelas.obsSesmt3,
-                        dateTimeReport: respostaConsultaTabelas.dateTimeReport
-                    });
-                }
-                setResponse({
-                    type: 'success',
-                });
-                setDataForm({
-                    consulta: 'gr',
+                /*
+                        if (dataForm.type == 'cnpj') {
+                            setRespostaDadosNR({
+                                tipo_consulta: respostaConsultaTabelas.tipo_consulta,
+                                id_registro: respostaConsultaTabelas.id_registro,
+                                cod_cnae: respostaConsultaTabelas.codigoCnaeFiscal,
+                                desc_cnae: respostaConsultaTabelas.descricaoCnaeFiscal,
+                                cnpj: respostaConsultaTabelas.cnpj,
+                                razaoSocial: respostaConsultaTabelas.razaoSocial,
+                                nomeFantasia: respostaConsultaTabelas.nomeFantasia,
+                                grau_risco: respostaConsultaTabelas.maiorGrauRisco,
+                                nro_trabalhadores: respostaConsultaTabelas.nroTrabalhadores,
+                                faixa_nro_trabalhadores_sesmt: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
+                                nro_tecnico_seg: respostaConsultaTabelas.tecnicoSeg,
+                                nro_engenheiro_seg: respostaConsultaTabelas.engenheiroSeg,
+                                nro_aux_tec_enfermagem: respostaConsultaTabelas.auxTecEnfermagem,
+                                nro_enfermeiro: respostaConsultaTabelas.enfermeiro,
+                                nro_medico: respostaConsultaTabelas.medico,
+                                faixa_nro_trabalhadores_cipa: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
+                                cipa_efetivos: respostaConsultaTabelas.cipaEfetivos,
+                                cipa_suplentes: respostaConsultaTabelas.cipaSuplentes,
+                                obsSesmt1: respostaConsultaTabelas.obsSesmt1,
+                                obsSesmt2: respostaConsultaTabelas.obsSesmt2,
+                                obsSesmt3: respostaConsultaTabelas.obsSesmt3,
+                                dispensaPGR: respostaConsultaTabelas.dispensaPGR,
+                                porte: respostaConsultaTabelas.porte,
+                                dateTimeReport: respostaConsultaTabelas.dateTimeReport
+                            });
+                        } else if (dataForm.type == 'cnae') {
+                            setRespostaDadosNR({
+                                tipo_consulta: respostaConsultaTabelas.tipo_consulta,
+                                id_registro: respostaConsultaTabelas.id_registro,
+                                cod_cnae: respostaConsultaTabelas.codigoCnae,
+                                desc_cnae: respostaConsultaTabelas.descricaoCnae,
+                                cnpj: respostaConsultaTabelas.cnpj,
+                                razaoSocial: respostaConsultaTabelas.razaoSocial,
+                                nomeFantasia: respostaConsultaTabelas.nomeFantasia,
+                                grau_risco: respostaConsultaTabelas.graudeRisco,
+                                nro_trabalhadores: respostaConsultaTabelas.nroTrabalhadores,
+                                faixa_nro_trabalhadores_sesmt: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
+                                nro_tecnico_seg: respostaConsultaTabelas.tecnicoSeg,
+                                nro_engenheiro_seg: respostaConsultaTabelas.engenheiroSeg,
+                                nro_aux_tec_enfermagem: respostaConsultaTabelas.auxTecEnfermagem,
+                                nro_enfermeiro: respostaConsultaTabelas.enfermeiro,
+                                nro_medico: respostaConsultaTabelas.medico,
+                                faixa_nro_trabalhadores_cipa: 'entre ' + respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
+                                cipa_efetivos: respostaConsultaTabelas.cipaEfetivos,
+                                cipa_suplentes: respostaConsultaTabelas.cipaSuplentes,
+                                obsSesmt1: respostaConsultaTabelas.obsSesmt1,
+                                obsSesmt2: respostaConsultaTabelas.obsSesmt2,
+                                obsSesmt3: respostaConsultaTabelas.obsSesmt3,
+                                dateTimeReport: respostaConsultaTabelas.dateTimeReport
+                            });
+                        }
+                */
+
+                setRespostaConsulta(respostaConsultaTabelas)
+
+                setStatusResponse({
+                    loading: false,
+                    status: 'success',
+                    message: respostaConsultaTabelas.mensagem
+                })
+
+                //limpa dados da consulta realizada
+                setDataForm((previousState) => ({
+                    ...previousState,
+                    //consulta: 'gr',
                     cnpj: '',
                     codigo_cnae1: '',
                     codigo_cnae2: '',
-                    //numero_trabalhadores: '',
-                    type: '',
-                    userEmail: ''
-                });
+                    //type: 'cnpj',
+                    //receberEmail: true,
+                    //userEmail: ''
+                }));
             }
         } catch (err) {
-            setLoading(false);
-            setResponse({
-                type: 'error',
-                mensagem: 'Erro: não foi possível realizar a consulta. Tente novamente mais tarde.'
-            });
+            setLoadingResponse(false);
             console.log(err);
         }
-        setLoading(false);
-        document.getElementById("resultado-consulta").scrollIntoView({ block: "center", behavior: "smooth" })
+        setLoadingResponse(false);
+        //document.getElementById("resultado-consulta").scrollIntoView({ block: "center", behavior: "smooth" })
     }
 
     return (
         <>
             <Grid container spacing={2}>
+                {/*titulo da pagina*/}
                 <Grid item xs={12}>
-                    <Typography variant='h3' component='h1' textAlign={'center'}>
+                    <Typography
+                        variant='h3'
+                        component='h1'
+                        textAlign='center'
+                        sx={{
+                            display: { xs: 'none', md: 'block' }
+                        }}
+                    //sx={{ fontSize: { xs: 14, sm: 18, md: 24, lg: 36 } }}
+                    >
                         Consulta Grau de Risco
                     </Typography>
                 </Grid>
-                <Grid item xs={0} sm={12} md={6}
+                {/*texto grau de risco*/}
+                <Grid item xs={12} sm={12} md={6}
                     justifyContent="center"
                     alignItems="center"
+                    sx={{
+                        display: { xs: 'none', md: 'block' }
+                    }}
                 >
                     <Typography variant='h6' component='h2' textAlign={'center'}>
-                        Normas Regulamentadoras (NRs)
+                        GR: GRAU DE RISCO
                     </Typography>
-                    <Typography variant='body1' component='p' textAlign={'center'} sx={{ py: 2, px: 2 }}>
-                        Lorem ipsum feugiat tincidunt aliquam mollis elit semper, metus tristique lectus himenaeos pharetra arcu ad proin, ut mattis nibh viverra est dictumst. tempor aliquam sociosqu interdum pretium leo gravida himenaeos vulputate faucibus, maecenas pharetra tristique mi ultrices tortor vitae diam senectus aptent, iaculis duis et faucibus phasellus ornare curabitur auctor. ultrices cursus enim placerat sodales massa iaculis a laoreet mollis vulputate, neque id vivamus nullam interdum eros pellentesque tincidunt nam. torquent semper elit gravida bibendum egestas aliquet metus quam, commodo nec venenatis varius in pretium molestie, fames curae purus id potenti vivamus aliquam.
+                    <Typography
+                        paragraph
+                        align='justify'
+                        sx={{ py: 2, px: 2 }}>
+                        O Grau de Risco de uma empresa é definido na NR04, classificado em 4 níveis, de 1 a 4, e indica a intensidade dos riscos de caráter físico, químico, biológico, ergonômicos e acidentais que os trabalhadores podem estar expostos.
                     </Typography>
                 </Grid>
+                {/*formulario de consulta*/}
                 <Grid item xs={12} sm={12} md={6}>
-                    <Typography variant='h6' component='h2' textAlign={'center'}>
-                        Ferramentas de Consultas
-                    </Typography>
-                    <Typography variant='body1' sx={{ py: 2, px: 2 }}>
-                        Disponibilizamos ferramentas para consulta de dados das NRs.
-                    </Typography>
-                    <Tabs 
-                        centered 
-                        variant="fullWidth"
-                        onChange={(e, newValue)=>{setFormOption(newValue)}} 
+                    <Typography
+                        variant='h6'
+                        component='h2'
+                        textAlign='center'
                     >
-                        <Tab label="CNPJ" value='cnpj'/>
-                        <Tab label="CNAE" value='cnae'/>
+                        Consulta Grau de Risco
+                    </Typography>
+                    <Typography
+                        paragraph
+                        align='justify'
+                        sx={{ py: 2, px: 2 }}
+                    >
+                        Com esta ferramenta é possível descobrir rapidamente o grau de risco de uma empresa de acordo com as normas vigentes. Indique o CNPJ da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.
+                    </Typography>
+                    <Tabs
+                        centered
+                        variant="fullWidth"
+                        value={dataForm.type}
+                        //onChange={(e, newValue) => { setFormOption({newValue}) }}
+                        onChange={(e, newValue) => {
+                            setDataForm((previousState) => ({
+                                ...previousState,
+                                type: newValue
+                            })
+                            )
+                        }}
+                    >
+                        <Tab label="CNPJ" value='cnpj' />
+                        <Tab label="CNAE" value='cnae' />
                     </Tabs>
-                    <Grid item container xs={12}>
+
+                    <Grid item xs={12} component={'form'} onSubmit={sendInfo} sx={{ p: 2 }}>
                         {
-                            formOption == 'cnpj' ?
-                            (<>cnpj</>):
-                            (<>cnae</>)
+                            dataForm.type == 'cnpj' ?
+                                (<FormCnpj dataForm={dataForm} setDataForm={setDataForm} />)
+                                : (<FormCnae dataForm={dataForm} setDataForm={setDataForm} />)
                         }
-
-
-
-
-
-
-
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                type='submit'
+                            >
+                                Consultar
+                            </Button>
+                        </Grid>
                     </Grid>
+                </Grid>
+                {/* área de resposta */}
+                <Grid item xs>
+                    {
+                        statusResponse.loading ? (
+                            <>
+                                <Stack spacing={2}>
+                                    <Skeleton variant="rounded" animation="wave" height={32} />
+                                    <Skeleton variant="rounded" animation="wave" height={16} />
+                                    <Skeleton variant="rounded" animation="wave" height={16} />
+                                    <Skeleton variant="rounded" animation="wave" height={16} />
+                                </Stack>
+                            </>
+                        ) : (
+                            statusResponse.status == 'error' ? (
+                                <RespostaErro dados={statusResponse} />
+                            ) :
+                                statusResponse.status == 'success' ? (
+                                    <>
+                                        <RespostaGrSucesso dados={respostaConsulta} />
+                                    </>
+                                ) : (null)
+                        )
+                    }
                 </Grid>
             </Grid>
         </>

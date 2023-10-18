@@ -96,12 +96,12 @@ export default async function handler(req, res) {
     }
 
     let maiorGrauRisco = 0
-    
+
     //consulta as infos dos cnaes na tabela de relação cnae x gr
     arrayDadosCnae.forEach((element, index) => {
         const consultaGrauRisco = consultaGrCnaes(element.codigo)
 
-        if(consultaGrauRisco){
+        if (consultaGrauRisco) {
             resposta.dadosCnaes.push({
                 codigo: element.codigo,
                 denominacao: consultaGrauRisco.denominacao,
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
         }
     });
 
-    if(maiorGrauRisco == 0){
+    if (maiorGrauRisco == 0) {
         return res.status(400).json({
             success: false,
             status_consulta: 53,
@@ -121,9 +121,22 @@ export default async function handler(req, res) {
             mensagem: 'Códigos CNAE não encontrados na consulta',
         })
     }
-    else{
+    else {
         if (resposta.dadosDaEmpresa) {
             resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
+            
+            //console.log("Verifica Dispensa PGR")
+            if (resposta.dadosDaEmpresa.opcao_pelo_mei) {
+                resposta.dadosDaEmpresa.dispensaPGR = true;
+            }
+            else if (resposta.dadosDaEmpresa.codigoPorte == 1 || resposta.dadosDaEmpresa.codigoPorte == 3) {
+                if (maiorGrauRisco < 3) {
+                    resposta.dadosDaEmpresa.dispensaPGR = true;
+                }
+            }
+            else {
+                resposta.dadosDaEmpresa.dispensaPGR = false;
+            }
         }
     }
 
@@ -203,12 +216,12 @@ async function consultaCnpj(cnpjInserido) {
         const dadosCnpj = await response.json();
         //console.log("RESP", dadosCnpj);
 
-        if(response.status == 400){
+        if (response.status == 400) {
             //cnpj consultado não encontrado
             return {
                 success: false,
                 status_consulta: 52,
-                mensagem: dadosCnpj.mensagem,
+                mensagem: dadosCnpj.message,
             }
         }
 
