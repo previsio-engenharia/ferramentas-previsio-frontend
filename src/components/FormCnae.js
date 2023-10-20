@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Grid, Switch, TextField } from "@mui/material"
+import { Button, FormControlLabel, Grid, Switch, TextField, Tooltip } from "@mui/material"
 import InputMask from "react-input-mask"
 
 export default function FormCnae(props) {
@@ -24,13 +24,18 @@ export default function FormCnae(props) {
                         onChange={onChangeInput}
                         value={dataForm.codigo_cnae1}
                     >
-                        {() => <TextField
-                            type="text"
-                            name="codigo_cnae1"
-                            fullWidth
-                            label="CNAE principal da empresa"
-                            variant="outlined" />}
+                        {() => (
+                            <Tooltip title="A atividade econômica principal é a constante no Cadastro Nacional de Pessoa Jurídica - CNPJ" arrow disableInteractive>
+                                <TextField
+                                    type="text"
+                                    name="codigo_cnae1"
+                                    fullWidth
+                                    label="CNAE principal da empresa"
+                                    variant="outlined" />
+                            </Tooltip>
+                        )}
                     </InputMask>
+
                 </Grid>
 
                 <Grid item xs={12}>
@@ -41,12 +46,16 @@ export default function FormCnae(props) {
                         onChange={onChangeInput}
                         value={dataForm.codigo_cnae2}
                     >
-                        {() => <TextField
-                            type="text"
-                            name="codigo_cnae2"
-                            fullWidth
-                            label="CNAE preponderante da empresa"
-                            variant="outlined" />}
+                        {() => (
+                            <Tooltip title="A atividade econômica preponderante é aquela que ocupa o maior número de trabalhadores" arrow disableInteractive>
+                                <TextField
+                                    type="text"
+                                    name="codigo_cnae2"
+                                    fullWidth
+                                    label="CNAE preponderante da empresa"
+                                    variant="outlined" />
+                            </Tooltip>
+                        )}
                     </InputMask>
                 </Grid>
                 {

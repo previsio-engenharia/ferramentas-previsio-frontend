@@ -1,7 +1,8 @@
 import Head from "next/head"
 import Footer from "components/Footer"
 import Menu from "components/Menu"
-import { Box, Container, CssBaseline } from "@mui/material"
+import { Box, Container, CssBaseline, ThemeProvider } from "@mui/material"
+import { theme } from "styles/themes"
 
 /**
  * <Head>
@@ -14,14 +15,14 @@ import { Box, Container, CssBaseline } from "@mui/material"
 export default function Layout({ children }) {
 
     return (
-        <>
-            <CssBaseline/>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
             <Head>
                 <link rel="shortcut icon" href="/public/favicon.ico" />
             </Head>
             <Menu />
             <Box>
-                <Container maxWidth="lg" sx={{  marginTop: 16 }}>
+                <Container maxWidth="lg" sx={{ marginTop: 16 }}>
                     <main className="mainContainer">
                         {children}
                     </main>
@@ -29,6 +30,6 @@ export default function Layout({ children }) {
             </Box>
             <Footer />
 
-        </>
+        </ThemeProvider>
     )
 }
