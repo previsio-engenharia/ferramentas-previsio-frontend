@@ -8,19 +8,20 @@ export default function CardExplicaConsulta({ title, text, link }) {
     //const { dadosDaEmpresa, dadosCnaes, consultaSesmt, consultaCipa } = dados
 
     return (
-        <Card elevation={2} sx={{ p: 1, mx: 4 }}>
+        <Card elevation={2} sx={{ px: 1}}>
             <CardContent>
                 <Typography
                     variant='h6'
                     component='h2'
                     align="center"
+                    sx={{ mb: 2 }}
                 >
                     {title}
                 </Typography>
                 <Typography
                     paragraph
                     align='justify'
-                    sx={{ mt: 2 }}
+                    //sx={{ mt: 2 }}
                 >
                     {text}
                 </Typography>

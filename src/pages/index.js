@@ -1,33 +1,79 @@
-import Link from 'next/link';
+//mui
+import { Grid, Typography } from '@mui/material';
+import ListaLinksFerramentas from 'components/lista-links-ferramentas';
 
-export default function Home(){
-    return(
+import Head from 'next/head';
+
+export default function Home() {
+
+    return (
         <>
-            <section className='contact'>
-                <div className='max-width'>
-                    <h2 className='title'>Ferramentas</h2>                    
-                    <div className='contact-content'>                        
-                        <div className='column left'>
-                            <div className='titulo-consulta'>
-                                Normas Regulamentadoras (NRs)                             
-                            </div>
-                            <ul className='lista-ferramentas'>
-                                <br/><li><Link target="_self" href="/consulta-grau-de-risco"><i className="fa-sharp fa-solid fa-arrow-right"></i> GR: Consulta Grau de Risco</Link></li>
-                                <br/><li><Link target="_self" href="/consulta-nr04"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-04: Consulta equipe SESMT</Link></li>
-                                <br/><li><Link target="_self" href="/consulta-nr05"><i className="fa-sharp fa-solid fa-arrow-right"></i> NR-05: Consulta equipe CIPA</Link></li>
-                            </ul>
-                        </div>
-                        <div className='column right'>
-                            <div className='titulo-consulta'>
-                                Ferramentas de Consulta
-                            </div>
-                            <div>
-                                <p>Disponibilizamos ferramentas para consulta de dados das NRs</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <Head>
+                <title>Ferramentas - Previsio Engenharia</title>
+                <meta name="description" content="Previsio Engenharia: Ferramentas de Consultas" />
+            </Head>
+            <Grid container >
+                {/*titulo da pagina e aviso*/}
+                <Grid item xs={12}>
+                    <Typography
+                        color='primary'
+                        variant='h2'
+                        component='h1'
+                        textAlign='center'
+                        sx={{
+                            mb: 2,
+                            display: { xs: 'none', md: 'block' }
+                        }}
+                    >
+                        Ferramentas
+                    </Typography>
+                </Grid>
+                {/*aviso de testes*/}
+
+                {/*texto grau de risco*/}
+                <Grid item xs={12} sm={12} md={6}
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        //display: { xs: 'none', md: 'block' },
+                        px:2
+                    }}
+                >
+                    <Typography
+                        variant='h6'
+                        component='h2'
+                        textAlign='center'
+                        sx={{ p:2 }}
+                    >
+                        Normas Regulamentadoras (NRs)
+                    </Typography>
+
+                    <ListaLinksFerramentas/>
+                    
+                </Grid>
+                {/*formulario de consulta*/}
+                <Grid item xs={12} sm={12} md={6} 
+                    sx={{ px: 2}} 
+                >
+                    <Typography
+                        variant='h6'
+                        component='h2'
+                        textAlign='center'
+                        sx={{ p:2 }}
+                    >
+                        Ferramentas de Consulta
+                    </Typography>
+                    <Typography
+                        paragraph
+                        align='justify'
+                        sx={{ pt: 2, px: 2 }}
+                    >
+                        Oferecemos ferramentas práticas para consultar informações relacionadas a normas regulamentadoras brasileiras.  Simplificamos a busca por dados normativos, ajudando você a conhecer melhor as regulamentações de segurança no trabalho. Comece sua pesquisa agora e descubra o que as normas têm a dizer.
+                    </Typography>
+                    
+                </Grid>
+            </Grid>
         </>
+
     )
 }

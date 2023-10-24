@@ -9,10 +9,21 @@ export default function FormCnpj(props) {
     //extrai estados de controle do formulario das props do componente
     const { dataForm, setDataForm } = props
     //função que atualiza dados no formulario
-    const onChangeInput = e => setDataForm({
-        ...dataForm,
-        [e.target.name]: e.target.value
-    });
+    const onChangeInput = e => {
+        let valueToSave = null
+        //se o campo for o nro de trabalhadores, só permite salvar dígitos numéricos     
+        if (e.target.name == 'numero_trabalhadores') {
+            valueToSave = e.target.value.replace(/[^0-9]/g, '');
+        }
+        else {
+            valueToSave = e.target.value
+        }
+        setDataForm({
+            ...dataForm,
+            //[e.target.name]: e.target.value
+            [e.target.name]: valueToSave
+        })
+    };
 
     return (
         <Grid
@@ -36,6 +47,21 @@ export default function FormCnpj(props) {
                     />}
                 </InputMask>
             </Grid>
+            {
+                dataForm.consulta == 'nr04' || dataForm.consulta == 'nr05' ? (
+                    <Grid item xs={12}>
+                        <TextField
+                            type="text"
+                            name="numero_trabalhadores"
+                            fullWidth
+                            label="Número de trabalhadores"
+                            variant="outlined"
+                            onChange={onChangeInput}
+                            value={dataForm.numero_trabalhadores}
+                        />
+                    </Grid>
+                ) : (null)
+            }
 
             {
                 dataForm.receberEmail ? (

@@ -16,7 +16,7 @@ export async function validateAndSendForm(dataForm) {
         //a mascara impede a inclusão de caracteres que não são numeros ou delimitadores
         //necessário checar se o tamanho está correto. Checado com o regex
         if (!dataForm.cnpj.match(cnpjRegex)) {
-            alert('Erro: Insira o CNPJ no formato correto.');
+            alert('Erro: Insira o CNPJ no formato correto');
             //setLoading(false);
             return null
         }
@@ -45,6 +45,17 @@ export async function validateAndSendForm(dataForm) {
         return null
     }
 
+    //verifica se o nro de trabalhadores foi preenchido corretamente (para nr04 e nr05)
+    if (dataForm.consulta == 'nr04' || dataForm.consulta == 'nr04' ){
+        const nro = parseInt(dataForm.numero_trabalhadores)
+        //console.log("ABC:", nro)
+        if(nro < 0){
+            alert('Erro: Insira o número de trabalhadores corretamente');
+            return null
+        }
+    }
+
+
     if (dataForm.receberEmail) {
         if (!dataForm.userEmail.match(emailRegex)) {
             alert('Erro: Insira um e-mail válido.');
@@ -55,7 +66,7 @@ export async function validateAndSendForm(dataForm) {
 
     //se deu certo até aqui, realiza o POST
     try {
-        const res = await fetch('/api/novaApi', {
+        const res = await fetch('/api/realiza-consultas', {
             method: 'POST',
             body: JSON.stringify(dataForm),
             headers: { 'Content-Type': 'application/json' }

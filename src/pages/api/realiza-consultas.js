@@ -11,7 +11,7 @@
     56	    // Não foi possível realizar correspondência na tabela CIPA
  */
 
-import { dimensionamento_sesmt, relacao_cnae_gr } from "static/nr04_tables";
+import { dimensionamento_sesmt, relacao_cnae_gr, observacoes_tabela_sesmt } from "static/nr04_tables";
 import { dimensionamento_cipa } from "static/nr05_tables";
 
 export default async function handler(req, res) {
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
             }
             break;
         case 'nr04': case 'nr05':
-            if ((!cnpjInserido && !codigoCnae1Inserido && !codigoCnae1Inserido) || !numeroTrabalhadoresInserido) {
+            if ((!cnpjInserido && !codigoCnae1Inserido && !codigoCnae2Inserido) || !numeroTrabalhadoresInserido || parseInt(numeroTrabalhadoresInserido) < 0) {
                 return res.status(400).json({
                     success: false,
                     //status_consulta:
@@ -70,7 +70,10 @@ export default async function handler(req, res) {
     if (cnpjInserido) {
         const dados = await consultaCnpj(cnpjInserido);
         if (dados.success) {
-            resposta.dadosDaEmpresa = dados.dadosDaEmpresa;
+            resposta.dadosDaEmpresa = { 
+                ... dados.dadosDaEmpresa,
+                numero_trabalhadores: numeroTrabalhadoresInserido,
+            };
             arrayDadosCnae = dados.dadosCnaes;
         }
         else {
@@ -391,6 +394,15 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
         return respostaErro;
     }
     else {
+        if(consultaSesmt.obsSesmt1){
+            consultaSesmt.obsSesmt1 = observacoes_tabela_sesmt[0]
+        }
+        if(consultaSesmt.obsSesmt2){
+            consultaSesmt.obsSesmt2 = observacoes_tabela_sesmt[1]
+        }
+        if(consultaSesmt.obsSesmt3){
+            consultaSesmt.obsSesmt3 = observacoes_tabela_sesmt[2]
+        }
         return consultaSesmt;
     }
 }
@@ -405,7 +417,7 @@ function consultaNr05Cnaes(maiorGrauRisco, nroTrabalhadores) {
     }
 
     var respostaErro = {
-        status_consulta: 0, //55, // Não foi possível realizar correspondência na tabela SESMT
+        status_consulta: 0, //55, // Não foi possível realizar correspondência na tabela CIPA
         erro: false,
         mensagem: '',
     }

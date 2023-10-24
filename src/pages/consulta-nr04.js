@@ -1,335 +1,200 @@
-import React, { useState, createContext } from 'react';
+//react
+import React, { useState } from 'react';
+import { useRef } from 'react';
+
+// funções
+import { updateResponseState, validateAndSendForm } from 'lib/consultaApi';
+
+//mui
+import { Button, Grid, Skeleton, Stack, Tab, Tabs, Typography } from '@mui/material';
+
+//components
+import FormCnpj from 'components/FormCnpj';
+import FormCnae from 'components/FormCnae';
+import CardResponse from 'components/card-response';
+import CardExplicaConsulta from 'components/card-explica-consulta';
+import CardAvisoTestes from 'components/card-aviso-testes';
 import Head from 'next/head';
-import InputMask from 'react-input-mask';
-import Link from 'next/link';
-import ContentLoader, {List} from 'react-content-loader';
 
-import Menu from 'components/Menu';
-import AvisoTestes from 'components/AvisoTestes'
-import RespostaErro from 'components/RespostaErro'
-import RespostaSesmtCnpj from 'components/RespostaSesmtCnpj'
-import RespostaSesmtCnae from 'components/RespostaSesmtCnae'
-import Footer from 'components/Footer';
-import { mostrarCnae, mostrarCnpj } from 'lib/custom';
+export default function ConsultaNR04() {
+    //ref utilizada para fazer scroll da tela para a área da resposta
+    const targetRef = useRef(null);
 
-
-function ConsultaNR04(){
-
-    const [loading, setLoading] = useState(false);
-
+    //dados do formulário (tanto cnpj quanto cnaes)
     const [dataForm, setDataForm] = useState({
         consulta: 'nr04',
         cnpj: '',
         codigo_cnae1: '',
         codigo_cnae2: '',
         numero_trabalhadores: '',
-        type: '',
+        type: 'cnpj',
+        receberEmail: true,
         userEmail: ''
     });
 
-    const [response, setResponse] = useState({
-        type: '',
-        mensagem: ''
+    //status da resposta da consulta
+    const [statusResponse, setStatusResponse] = useState({
+        loading: false,
+        status: '',
+        message: ''
     });
-
-    var [respostaDadosNR, setRespostaDadosNR] = useState({
-        tipo_consulta: '',
-        id_registro: '',
-        cnpj: '',
-        razaoSocial: '',
-        nomeFantasia: '',
-        cod_cnae: '',
-        desc_cnae: '',
-        codigoCnaeFiscal: '',
-        descricaoCnaeFiscal: '',
-        grau_risco: '',
-        nro_trabalhadores: '',
-        faixa_nro_trabalhadores_sesmt: '',
-        nro_tecnico_seg: '',
-        nro_engenheiro_seg: '',
-        nro_aux_tec_enfermagem: '',
-        nro_enfermeiro: '',
-        nro_medico: '',
-        faixa_nro_trabalhadores_cipa: '',
-        cipa_efetivos: '',
-        cipa_suplentes: '',
-        obsSesmt1: '',
-        obsSesmt2: '',
-        obsSesmt3: '',
-        dispensaPGR: '',
-        porte: '',
-        dateTimeReport: ''
-    });    
-
-    const onChangeInput = e => setDataForm({...dataForm, [e.target.name]: e.target.value});
-
-    const sendInfo = async e => {
-        //inicia placeholder
-        setLoading(true);
-
-        //indica que não deve recarregar a página
-        e.preventDefault(); 
-
-        //verifica numero de funcionários
-        if(dataForm.numero_trabalhadores == 0 || dataForm.numero_trabalhadores == ""){
-            //nroFuncOk = true;
-            alert('Erro: Insira o número de funcionários.');
-            //setResponse({loading: false}); 
-            setLoading(false);
-            return
-        }
-
-        if(dataForm.userEmail.length > 0){
-            var emailRegex = /\S+@\S+\.\S+/
-            if(!dataForm.userEmail.match(emailRegex)){
-                alert('Erro: Insira um e-mail válido.');
-                //setResponse({loading: false}); 
-                setLoading(false);
-                return
-            }
-        }        
-       
-        //verifica inicialmente se o CNPJ foi inserido corretamente
-        if(dataForm.type == 'cnpj'){
-            var cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
-            //a mascara impede a inclusão de caracteres que não são numeros ou delimitadores
-            //necessário checar se o tamanho está correto. Checado com o regex
-            if(!dataForm.cnpj.match(cnpjRegex)){
-                alert('Erro: Insira o CNPJ no formato correto.');
-                //setResponse({loading: false}); 
-                setLoading(false);
-                return
-            }
-            else{
-                dataForm.codigo_cnae1 = '';
-                dataForm.codigo_cnae2 = '';
-            }
-        }else if(dataForm.type == 'cnae'){
-            //verifica se o cnae foi inserido corretamente
-            var cnaeRegex = /^\d{1,2}\.\d{1,2}-\d{1}/;
-            //a mascara impede a inclusão de caracteres que não são numeros ou delimitadores
-            //necessário checar se o tamanho está correto. Checado com o regex
-            if(!dataForm.codigo_cnae1.match(cnaeRegex) && !dataForm.codigo_cnae2.match(cnaeRegex)){
-                alert('Erro: Insira um código CNAE válido');
-                //setResponse({loading: false});
-                setLoading(false); 
-                return                                
-            }
-            else{
-                dataForm.cnpj = '';
-            }
-        }else{
-            //dá falha se não reconhecer nem cnpj nem cnae
-            alert('Erro: Falha no envio do formulário');
-            setLoading(false);
-            return
-        }
-        
-        //se deu certo até aqui, realiza o POST
-        try{
-            const res = await fetch(process.env.SERVER_URL + 'nr04-05-consulta', {
-                method: 'POST',
-                body: JSON.stringify(dataForm),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            
-            const retorno = await res.json();
-            //console.log(retorno.respostaConsultaTabelas);
-            
-            if(retorno.respostaConsultaTabelas.erro){
-                setResponse({
-                    type:'error',
-                    mensagem: retorno.respostaConsultaTabelas.mensagem                        
-                });
-            }
-            else{                
-                
-                if(dataForm.type=='cnpj'){
-                    setRespostaDadosNR({  
-                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
-                        id_registro: retorno.respostaConsultaTabelas.id_registro,
-                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnaeFiscal,
-                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnaeFiscal,
-                        cnpj: retorno.respostaConsultaTabelas.cnpj,
-                        razaoSocial: retorno.respostaConsultaTabelas.razaoSocial,
-                        nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,
-                        grau_risco: retorno.respostaConsultaTabelas.maiorGrauRisco,
-                        nro_trabalhadores: retorno.respostaConsultaTabelas.nroTrabalhadores,
-                        faixa_nro_trabalhadores_sesmt: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
-                        nro_tecnico_seg: retorno.respostaConsultaTabelas.tecnicoSeg,
-                        nro_engenheiro_seg: retorno.respostaConsultaTabelas.engenheiroSeg,
-                        nro_aux_tec_enfermagem: retorno.respostaConsultaTabelas.auxTecEnfermagem,
-                        nro_enfermeiro: retorno.respostaConsultaTabelas.enfermeiro,
-                        nro_medico: retorno.respostaConsultaTabelas.medico,
-                        faixa_nro_trabalhadores_cipa: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
-                        cipa_efetivos: retorno.respostaConsultaTabelas.cipaEfetivos,
-                        cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes,
-                        obsSesmt1: retorno.respostaConsultaTabelas.obsSesmt1,
-                        obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
-                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
-                        dispensaPGR: retorno.respostaConsultaTabelas.dispensaPGR,
-                        porte: retorno.respostaConsultaTabelas.porte,
-                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
-                    });                    
-                }else if(dataForm.type=='cnae'){
-                    setRespostaDadosNR({ 
-                        tipo_consulta: retorno.respostaConsultaTabelas.tipo_consulta,
-                        id_registro: retorno.respostaConsultaTabelas.id_registro,
-                        cod_cnae: retorno.respostaConsultaTabelas.codigoCnae,
-                        desc_cnae: retorno.respostaConsultaTabelas.descricaoCnae,
-                        cnpj: retorno.respostaConsultaTabelas.cnpj,
-                        razaoSocial: retorno.respostaConsultaTabelas.razaoSocial,
-                        nomeFantasia: retorno.respostaConsultaTabelas.nomeFantasia,
-                        grau_risco: retorno.respostaConsultaTabelas.graudeRisco,
-                        nro_trabalhadores: retorno.respostaConsultaTabelas.nroTrabalhadores,
-                        faixa_nro_trabalhadores_sesmt: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinSesmt + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxSesmt,
-                        nro_tecnico_seg: retorno.respostaConsultaTabelas.tecnicoSeg,
-                        nro_engenheiro_seg: retorno.respostaConsultaTabelas.engenheiroSeg,
-                        nro_aux_tec_enfermagem: retorno.respostaConsultaTabelas.auxTecEnfermagem,
-                        nro_enfermeiro: retorno.respostaConsultaTabelas.enfermeiro,
-                        nro_medico: retorno.respostaConsultaTabelas.medico,
-                        faixa_nro_trabalhadores_cipa: 'entre ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMinCipa + ' e ' + retorno.respostaConsultaTabelas.nroTrabalhadoresMaxCipa,
-                        cipa_efetivos: retorno.respostaConsultaTabelas.cipaEfetivos,
-                        cipa_suplentes: retorno.respostaConsultaTabelas.cipaSuplentes,
-                        obsSesmt1: retorno.respostaConsultaTabelas.obsSesmt1,
-                        obsSesmt2: retorno.respostaConsultaTabelas.obsSesmt2,
-                        obsSesmt3: retorno.respostaConsultaTabelas.obsSesmt3,
-                        dateTimeReport: retorno.respostaConsultaTabelas.dateTimeReport
-                    });  
-                }
-                setResponse({
-                    type:'success',
-                });
-                setDataForm({
-                    consulta: 'nr04',
-                    cnpj: '',
-                    codigo_cnae1: '',
-                    codigo_cnae2: '',
-                    numero_trabalhadores: '',
-                    type: '',
-                    userEmail: ''
-                });
-            }
-        }catch(err){  
-            setLoading(false);    
-            setResponse({
-                type:'error',
-                mensagem:'Erro: não foi possível realizar a consulta. Tente novamente mais tarde.'
-            });            
-            console.log(err);
-        }
-        setLoading(false);
-        document.getElementById("resultado-consulta").scrollIntoView({block: "center", behavior: "smooth"})
+    // função pra atualizar o loading da resposta
+    const setLoadingResponse = (status) => {
+        setStatusResponse((previousState) => ({
+            ...previousState,
+            loading: status
+        }))
     }
 
-    return(        
-        <div>
+    //estado para salvar a resposta da consulta
+    const [respostaConsulta, setRespostaConsulta] = useState()
+
+    const consultaTabelas = async e => {
+        e.preventDefault();
+        //console.log("Consulta tabelas:")
+
+        setLoadingResponse(true);
+        //realiza a consulta assíncrona
+        const respostaConsultaTabelas = await validateAndSendForm(dataForm)
+        setLoadingResponse(false);
+
+        //console.log(respostaConsultaTabelas);
+        if (respostaConsultaTabelas) {
+            //atualiza campos com a resposta
+            updateResponseState(respostaConsultaTabelas, setStatusResponse, setRespostaConsulta)
+            //limpa dados da consulta realizada
+            setDataForm((previousState) => ({
+                ...previousState,
+                //consulta: 'gr',
+                cnpj: '',
+                codigo_cnae1: '',
+                codigo_cnae2: '',
+                numero_trabalhadores: '',
+                //type: 'cnpj',
+                //receberEmail: true,
+                //userEmail: ''
+            }));
+            //scroll da tela para área da resposta
+            targetRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
+    }
+
+    return (
+        <>
             <Head>
-                <meta name="description" content="Previsio Engenharia: Consulta NR04: Constituição de Equipe SESMT"/>
-                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
+                <meta name="description" content="Previsio Engenharia: Consulta GR: Grau de Risco" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <meta name="keywords" content="grau de risco, nr04, consulta grau de risco"></meta>
                 <title>Consulta NR04 - Previsio Engenharia</title>
             </Head>
+            <Grid container >
+                {/*titulo da pagina e aviso*/}
+                <Grid item xs={12}>
+                    <Typography
+                        color='primary'
+                        variant='h2'
+                        component='h1'
+                        textAlign='center'
+                        sx={{
+                            mb: 2,
+                            display: { xs: 'none', md: 'block' }
+                        }}
+                    >
+                        Consulta NR04: Equipe SESMT
+                    </Typography>
+                    <CardAvisoTestes />
+                </Grid>
+                {/*aviso de testes*/}
 
-            <section className='contact'>
-                <div className='max-width'>
-                    <h2 className='title'>Consulta NR04: Equipe SESMT</h2>
-                    <AvisoTestes/>
-                    <div className='contact-content'>
-                        <div className='column left'>
-                            <div className='bloco-explicacao'>
-                                <h3 className='titulo-consulta'>NR04</h3>
-                                <p>Esta Norma estabelece os parâmetros e os requisitos para constituição e manutenção dos Serviços Especializados em Segurança e Medicina do Trabalho - SESMT, com a finalidade de promover a saúde e proteger a integridade do trabalhador</p>
-                                <a target="_blank" href="https://www.gov.br/trabalho-e-previdencia/pt-br/composicao/orgaos-especificos/secretaria-de-trabalho/inspecao/seguranca-e-saude-no-trabalho/normas-regulamentadoras/nr-04.pdf"><i className="fa-sharp fa-solid fa-arrow-right"></i> Acesse a norma completa</a>
-                            </div>
-                        </div>
+                {/*texto grau de risco*/}
+                <Grid item xs={12} sm={12} md={6}
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        display: { xs: 'none', md: 'block' },
+                        px:2
+                    }}
+                >
+                    
+                    <CardExplicaConsulta
+                        title={'NR04'}
+                        text={'Esta Norma estabelece os parâmetros e os requisitos para constituição e manutenção dos Serviços Especializados em Segurança e Medicina do Trabalho - SESMT, com a finalidade de promover a saúde e proteger a integridade do trabalhador'}
+                        link={'https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-04-atualizada-2022-2-1.pdf'}
+                    />
+                </Grid>
+                {/*formulario de consulta*/}
+                <Grid item xs={12} sm={12} md={6} 
+                    sx={{ px: 2}} 
+                >
+                    <Typography
+                        variant='h6'
+                        component='h2'
+                        textAlign='center'
+                        sx={{ p:2 }}
+                    >
+                        Consultas: Equipe SESMT
+                    </Typography>
+                    <Typography
+                        paragraph
+                        align='justify'
+                        //sx={{ pt: 2, px: 2 }}
+                    >
+                        Com esta ferramenta é possível descobrir rapidamente a composição da equipe SESMT, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.
+                    </Typography>
+                    <Tabs
+                        centered
+                        variant="fullWidth"
+                        value={dataForm.type}
+                        //onChange={(e, newValue) => { setFormOption({newValue}) }}
+                        onChange={(e, newValue) => {
+                            setDataForm((previousState) => ({
+                                ...previousState,
+                                type: newValue
+                            })
+                            )
+                        }}
+                    >
+                        <Tab label="CNPJ" value='cnpj' />
+                        <Tab label="CNAE" value='cnae' />
+                    </Tabs>
 
-                        <div className='column right'>
-                            <div className='titulo-consulta'>
-                                Consultas: Equipe SESMT                              
-                            </div>
-                            <p>Com esta ferramenta é possível descobrir rapidamente a composição da equipe SESMT, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.</p>
-                            <div>
-                                <button className='selecionaEntrada btnCNPJ' onClick={mostrarCnpj}>Consultar com CNPJ</button>
-                                <button className='selecionaEntrada btnCNAE' onClick={mostrarCnae}>Consultar com CNAE</button>                             
-                            </div>
-                            
-                            <form className='formCNPJ' onSubmit={sendInfo}>
-                                <div className='fields'>
-                                    <div className='field'>
-                                    <InputMask type="text" name="cnpj" mask="99.999.999/9999-99" placeholder="Digite o CNPJ da empresa" onChange={onChangeInput} value={dataForm.cnpj}/>
-                                    </div>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input className='inputEmail' type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
-                                    </div>
-                                </div>
-                                
-                                <div className='button-area'>
-                                    <button type="submit" onClick={()=>{dataForm.type='cnpj';}}>Consultar</button>
-                                </div>                                
-                            </form>
+                    <Grid item xs={12} component={'form'} onSubmit={consultaTabelas} sx={{ p: 2 }}>
+                        {
+                            dataForm.type == 'cnpj' ?
+                                (<FormCnpj dataForm={dataForm} setDataForm={setDataForm} />)
+                                : (<FormCnae dataForm={dataForm} setDataForm={setDataForm} />)
+                        }
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                type='submit'
+                                disabled={statusResponse.loading}
+                            >
+                                Consultar
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                {/* área de resposta */}
+                <Grid ref={targetRef} item xs m={2}>
+                    {
+                        statusResponse.loading ? (
+                            <Stack spacing={2}>
+                                <Skeleton variant="rounded" animation="wave" height={32} />
+                                <Skeleton variant="rounded" animation="wave" height={16} />
+                                <Skeleton variant="rounded" animation="wave" height={16} />
+                                <Skeleton variant="rounded" animation="wave" height={16} />
+                            </Stack>
+                        ) : (
+                            statusResponse.status == 'error' || statusResponse.status == 'success' ? (
+                                <CardResponse statusResponse={statusResponse} dados={respostaConsulta} />
+                            ) : (null)
+                        )
+                    }
+                </Grid>
+            </Grid>
+        </>
 
-                            <form className='formCNAE' onSubmit={sendInfo}>
-                                <div className='fields'>
-                                    <div className='field name tooltip'>
-                                        <span className='tooltiptext'>A atividade econômica principal é a constante no Cadastro Nacional de  Pessoa Jurídica - CNPJ.</span>
-                                        <InputMask type="text" name="codigo_cnae1" placeholder="Digite o CNAE principal da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae1}/>
-                                    </div>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field name tooltip'>
-                                        <span className='tooltiptext'>A atividade econômica preponderante é aquela que ocupa o maior número de trabalhadores.</span>
-                                        <InputMask type="text" name="codigo_cnae2" placeholder="Digite o CNAE preponderante da empresa" mask="99.99-9" onChange={onChangeInput} value={dataForm.codigo_cnae2}/>
-                                    </div>
-                                </div>
-                                <div className='fields'>
-                                    <div className='field email'>
-                                        <input type="number" name="numero_trabalhadores" placeholder="Digite o número de funcionários" min="1" step="1" onChange={onChangeInput} value={dataForm.numero_trabalhadores}/>
-                                    </div>
-                                </div>
-                                <div className='label'>
-                                    <p>Deseja receber por e-mail o relatório da consulta? (opcional)</p>
-                                </div>                          
-                                <div className='fields'>
-                                    <div className='field'>
-                                        <input type='text' name="userEmail" placeholder="Digite seu e-mail" onChange={onChangeInput} value={dataForm.userEmail}/>
-                                    </div>
-                                </div>
-                                <div className='button-area'>
-                                    <button type="submit" onClick={()=>{dataForm.type='cnae'; }}>Consultar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div> 
-
-                    <div id='resultado-consulta'>
-
-                        {loading ? <List /> : ''}
-
-                        {!loading && response.type === 'error' ? 
-                           <RespostaErro dados={response}/>
-                        : ""}
-
-                        {!loading && response.type === 'success' && respostaDadosNR.cnpj ? 
-                            <RespostaSesmtCnpj dados={respostaDadosNR}/> : ""} 
-
-                        {!loading && response.type === 'success' && !respostaDadosNR.cnpj ? 
-                            <RespostaSesmtCnae dados={respostaDadosNR}/> : ""} 
-                    </div>
-
-                </div>
-            </section>
-            
-        </div>
     )
 }
-export default ConsultaNR04;

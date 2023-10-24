@@ -98,6 +98,19 @@ export default function TabelaDadosEmpresa({ dadosDaEmpresa, cnaePrincipal, grau
                                 </TableCell>
                                 <TableCell align="left">{grauDeRisco}</TableCell>
                             </StyledTableRow>
+                            {/** */
+                                dadosDaEmpresa.numero_trabalhadores &&
+                                <StyledTableRow
+                                    key={'quantidadeTrabalhadores'}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell align="left" sx={{ maxWidth: 200 }}>
+                                        <Typography variant="body1" sx={{ fontSize: '14px', fontWeight: 500 }} >Quantidade de Trabalhadores</Typography>
+                                    </TableCell>
+                                    <TableCell align="left">{dadosDaEmpresa.numero_trabalhadores}</TableCell>
+                                </StyledTableRow>
+
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>

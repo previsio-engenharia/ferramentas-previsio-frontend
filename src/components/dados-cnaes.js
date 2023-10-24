@@ -24,7 +24,7 @@ export default function TabelaDadosCnaes({ dadosCnaes, startOpen }) {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <Typography variant="h5">CNAEs</Typography>
+                <Typography variant="h5">Detalhamento dos CNAEs</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TableContainer component={Paper}>

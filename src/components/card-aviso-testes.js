@@ -53,11 +53,11 @@ export default function CardAvisoTestes() {
                             },
                             mx:{
                                 xs:1,
-                                md: 4
+                                md: 2
                             },
                             my:{
                                 xs: 1,
-                                md: 5,
+                                md: 4,
                             }
                         }}
                     >

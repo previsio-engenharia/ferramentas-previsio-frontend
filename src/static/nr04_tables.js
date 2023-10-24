@@ -400,6 +400,15 @@ const dimensionamento_sesmt = [
     },
 ];
 
+// vetor com as observações da tabela sesmt (* = [0], ** = [1], ** = [2])
+const observacoes_tabela_sesmt = [
+    '(*) Tempo parcial (mínimo de três horas)',
+    
+    '(**) O dimensionamento total deverá ser feito levando-se em consideração o dimensionamento da faixa de 3.501 a 5.000, acrescido do dimensionamento do(s) grupo(s) de 4.000 ou fração acima de 2.000',
+    
+    '(***) O empregador pode optar pela contratação de um enfermeiro do trabalho em tempo parcial, em substituição ao auxiliar ou técnico de enfermagem do trabalho'
+]
+
 
 const relacao_cnae_gr = [
     {
@@ -6789,6 +6798,7 @@ const relacao_cnae_gr = [
 ];
 
 module.exports = {
-    relacao_cnae_gr, 
+    relacao_cnae_gr,
+    observacoes_tabela_sesmt,
     dimensionamento_sesmt
 };
