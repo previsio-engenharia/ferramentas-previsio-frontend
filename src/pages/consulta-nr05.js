@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useRef } from 'react';
 
 // funções
-import { updateResponseState, validateAndSendForm } from 'lib/consultaApi';
+import { saveQueryOnDB, updateResponseState, validateAndSendForm } from 'lib/consultaApi';
 
 //mui
 import { Button, Grid, Skeleton, Stack, Tab, Tabs, Typography } from '@mui/material';
@@ -15,6 +15,7 @@ import CardResponse from 'components/card-response';
 import CardExplicaConsulta from 'components/card-explica-consulta';
 import CardAvisoTestes from 'components/card-aviso-testes';
 import Head from 'next/head';
+import { ListaLinkIndex } from 'components/lista-links-ferramentas';
 
 export default function ConsultaNR05() {
     //ref utilizada para fazer scroll da tela para a área da resposta
@@ -62,6 +63,10 @@ export default function ConsultaNR05() {
         if (respostaConsultaTabelas) {
             //atualiza campos com a resposta
             updateResponseState(respostaConsultaTabelas, setStatusResponse, setRespostaConsulta)
+
+            //envia infos para salvar registro da consulta no DB
+            await saveQueryOnDB(dataForm, respostaConsultaTabelas)
+
             //limpa dados da consulta realizada
             setDataForm((previousState) => ({
                 ...previousState,
@@ -110,32 +115,33 @@ export default function ConsultaNR05() {
                     alignItems="center"
                     sx={{
                         display: { xs: 'none', md: 'block' },
-                        px:2
+                        px: 2
                     }}
                 >
-                    
+
                     <CardExplicaConsulta
                         title={'NR05'}
                         text={'Esta Norma estabelece os parâmetros e os requisitos da Comissão Interna de Prevenção de Acidentes – CIPA, tendo por objetivo a prevenção de acidentes e doenças relacionadas ao trabalho, de modo a tornar compatível, permanentemente, o trabalho com a preservação da vida e promoção da saúde do trabalhador.'}
                         link={'https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-05-atualizada-2022.pdf'}
                     />
+                    <ListaLinkIndex />
                 </Grid>
                 {/*formulario de consulta*/}
-                <Grid item xs={12} sm={12} md={6} 
-                    sx={{ px: 2}} 
+                <Grid item xs={12} sm={12} md={6}
+                    sx={{ px: 2 }}
                 >
                     <Typography
                         variant='h6'
                         component='h2'
                         textAlign='center'
-                        sx={{ p:2 }}
+                        sx={{ p: 2 }}
                     >
                         Composição da Equipe da CIPA
                     </Typography>
                     <Typography
                         paragraph
                         align='justify'
-                        //sx={{ pt: 2, px: 2 }}
+                    //sx={{ pt: 2, px: 2 }}
                     >
                         Com esta ferramenta, é possível descobrir rapidamente a composição necessária da equipe da CIPA, conforme orientado pelas normas vigentes. Indique o CNPJ e o número de funcionários da empresa que deseja consultar. Caso não seja possível consultar o CNPJ, há a opção de consultar diretamente com o CNAE desejado.
                     </Typography>

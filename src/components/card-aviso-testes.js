@@ -18,7 +18,6 @@ export default function CardAvisoTestes() {
     // Check if a cookie exists to hide the warning
     useEffect(() => {
         const cookieValue = Cookies.get('hideWarning');
-        console.log("cookie:", cookieValue)
         if (cookieValue) {
             setEsconderAviso(true)
         }

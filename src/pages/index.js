@@ -1,6 +1,6 @@
 //mui
 import { Grid, Typography } from '@mui/material';
-import ListaLinksFerramentas from 'components/lista-links-ferramentas';
+import { ListaLinksFerramentas } from 'components/lista-links-ferramentas';
 
 import Head from 'next/head';
 
@@ -36,30 +36,30 @@ export default function Home() {
                     alignItems="center"
                     sx={{
                         //display: { xs: 'none', md: 'block' },
-                        px:2
+                        px: 2
                     }}
                 >
                     <Typography
                         variant='h6'
                         component='h2'
                         textAlign='center'
-                        sx={{ p:2 }}
+                        sx={{ p: 2 }}
                     >
                         Normas Regulamentadoras (NRs)
                     </Typography>
 
-                    <ListaLinksFerramentas/>
-                    
+                    <ListaLinksFerramentas />
+
                 </Grid>
                 {/*formulario de consulta*/}
-                <Grid item xs={12} sm={12} md={6} 
-                    sx={{ px: 2}} 
+                <Grid item xs={12} sm={12} md={6}
+                    sx={{ px: 2 }}
                 >
                     <Typography
                         variant='h6'
                         component='h2'
                         textAlign='center'
-                        sx={{ p:2 }}
+                        sx={{ p: 2 }}
                     >
                         Ferramentas de Consulta
                     </Typography>
@@ -70,7 +70,7 @@ export default function Home() {
                     >
                         Oferecemos ferramentas práticas para consultar informações relacionadas a normas regulamentadoras brasileiras.  Simplificamos a busca por dados normativos, ajudando você a conhecer melhor as regulamentações de segurança no trabalho. Comece sua pesquisa agora e descubra o que as normas têm a dizer.
                     </Typography>
-                    
+
                 </Grid>
             </Grid>
         </>
