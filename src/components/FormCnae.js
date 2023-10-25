@@ -114,7 +114,7 @@ export default function FormCnae(props) {
                                 )
                             }}
                         />}
-                        label="Desejo receber relatório da consulta por e-mail"
+                        label="Desejo receber o relatório da consulta por e-mail"
                     />
                 </Grid>
                 {/*
