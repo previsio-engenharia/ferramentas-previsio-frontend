@@ -1,15 +1,15 @@
-//import { esconderAviso } from "lib/aviso";
 'use client'
-
-import { Box, Button, Card, CardActions, CardContent, Link, Paper, Typography } from '@mui/material';
-import Cookies from 'js-cookie';
+//react
 import { useEffect, useState } from 'react'
-
+//mui
+import { Box, Button, Card, CardActions, CardContent, Link, Paper, Typography } from '@mui/material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
-import { theme } from 'styles/themes';
-
+//packs
+import Cookies from 'js-cookie';
+//consts
 const linkEmail = 'mailto:ped@previsio.com.br?subject=Feedback%20sobre%20ferramentas%20de%20consulta&body=Olá,%0D%0Aestive%20utilizando%20as%20ferramentas%20de%20consulta%20no%20site%20da%20Previsio%20e%20gostaria%20de%20deixar%20o%20seguinte%20comentário:%0D%0A%0D%0A'
 const linkContato = 'https://previsio.com.br/contato/'
+
 
 export default function CardAvisoTestes() {
 
@@ -102,7 +102,6 @@ export default function CardAvisoTestes() {
                                 <Button
                                     onClick={createCookie} color="secondary"
                                     variant='contained'
-
                                 >
                                     Entendi!
                                 </Button>

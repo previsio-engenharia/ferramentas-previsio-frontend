@@ -9,10 +9,10 @@ import { saveQueryOnDB, updateResponseState, validateAndSendForm } from 'lib/con
 import { Button, Grid, Skeleton, Stack, Tab, Tabs, Typography } from '@mui/material';
 
 //components
-import FormCnpj from 'components/FormCnpj';
-import FormCnae from 'components/FormCnae';
-import CardResponse from 'components/card-response';
-import CardExplicaConsulta from 'components/card-explica-consulta';
+import FormCnpj from 'components/pagina-consulta/form-cnpj';
+import FormCnae from 'components/pagina-consulta/form-cnae';
+import CardResponse from 'components/pagina-consulta/resposta-consulta/card-response';
+import CardExplicaConsulta from 'components/pagina-consulta/card-explica-consulta';
 import CardAvisoTestes from 'components/card-aviso-testes';
 import Head from 'next/head';
 import { ListaLinkIndex } from 'components/lista-links-ferramentas';
@@ -80,7 +80,7 @@ export default function ConsultaNR05() {
                 //userEmail: ''
             }));
             //scroll da tela para área da resposta
-            targetRef.current.scrollIntoView({ behavior: 'smooth' })
+            targetRef.current.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" })
         }
     }
 

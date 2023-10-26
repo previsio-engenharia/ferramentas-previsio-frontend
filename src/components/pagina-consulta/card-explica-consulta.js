@@ -1,5 +1,5 @@
 import { Button, Card, CardActions, CardContent, Divider, Grid, Paper, Typography } from "@mui/material"
-import ExternalLinkButton from "./external-link-button"
+import ExternalLinkButton from "../external-link-button"
 
 export default function CardExplicaConsulta({ title, text, link }) {
 
