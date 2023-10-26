@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 //MUI
-import {AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography, Button} from '@mui/material';
+import { AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { theme } from 'styles/themes';
 //consts
@@ -75,7 +75,12 @@ function Menu(props) {
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <AppBar component="nav">
+            <AppBar
+                component="nav"
+                //sx={{ backgroundColor: '#061018' }} //Azul escuro
+                sx={{ backgroundColor: '#09253C' }} //Azul um pouco menos escuro
+                //sx={{ backgroundColor: theme.palette.primary.main }} //Verde
+            >
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -84,10 +89,17 @@ function Menu(props) {
                         onClick={handleDrawerToggle}
                         sx={{ mr: 2, display: { sm: 'none' } }}
                     >
-                        <MenuIcon />
+                        <MenuIcon
+                            sx={{
+                                color: '#fff',
+                                '&:hover': {
+                                    color: theme.palette.primary.light, // Set the font color on hover
+                                },
+                            }} />
                     </IconButton>
                     <Image
-                        src="/previsio_logo_bc.svg"
+                        src="/previsio_logo_vd.svg"
+                        //src="/previsio_logo_bc.svg" //logo branco
                         alt="Logo Previsio Engenharia"
                         width={30}
                         height={30}
@@ -105,8 +117,13 @@ function Menu(props) {
                     <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {navItems.map((item) => (
                             <Link href={item.link} key={item.text} style={{ textDecoration: 'none' }}>
-
-                                <Button key={item.text} sx={{ color: '#fff' }}>
+                                <Button
+                                    sx={{
+                                        color: '#fff',
+                                        '&:hover': {
+                                            color: theme.palette.primary.light, // Set the font color on hover
+                                        },
+                                    }}>
                                     {item.text}
                                 </Button>
                             </Link>

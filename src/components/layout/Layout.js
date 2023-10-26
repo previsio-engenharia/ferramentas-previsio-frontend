@@ -1,8 +1,8 @@
 import Head from "next/head"
-import Footer from "components/Footer"
 import Menu from "components/layout/menu"
 import { Container, CssBaseline, ThemeProvider } from "@mui/material"
 import { theme } from "styles/themes"
+import Footer from "./footer"
 
 export default function Layout({ children }) {
 
@@ -15,7 +15,7 @@ export default function Layout({ children }) {
                     {children}
                 </main>
             </Container>
-            <Footer />
+            <Footer/>
         </ThemeProvider>
     )
 }
