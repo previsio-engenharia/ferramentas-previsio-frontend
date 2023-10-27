@@ -81,7 +81,7 @@ export default function ConsultaGR() {
                 //userEmail: ''
             }));
             //scroll da tela para área da resposta
-            targetRef.current.scrollIntoView({ behavior: 'smooth' })
+            targetRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
         }
     }
 
@@ -164,13 +164,13 @@ export default function ConsultaGR() {
                         <Tab label="CNAE" value='cnae' />
                     </Tabs>
 
-                    <Grid item xs={12} component={'form'} onSubmit={consultaTabelas} sx={{ p: 2 }}>
+                    <Grid item xs={12} component={'form'} onSubmit={consultaTabelas} sx={{ py: 2 }}>
                         {
                             dataForm.type == 'cnpj' ?
                                 (<FormCnpj dataForm={dataForm} setDataForm={setDataForm} />)
                                 : (<FormCnae dataForm={dataForm} setDataForm={setDataForm} />)
                         }
-                        <Grid item xs={12}>
+                        <Grid item xs={12} ref={targetRef}>
                             <Button
                                 variant="contained"
                                 fullWidth
@@ -183,7 +183,7 @@ export default function ConsultaGR() {
                     </Grid>
                 </Grid>
                 {/* área de resposta */}
-                <Grid ref={targetRef} item xs m={2}>
+                <Grid item xs m={2}>
                     {
                         statusResponse.loading ? (
                             <Stack spacing={2}>

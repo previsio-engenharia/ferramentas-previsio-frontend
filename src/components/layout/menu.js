@@ -25,6 +25,35 @@ const navItems = [
     }
 ];
 
+// OPÇÔES DE CORES PARA O MENU PRINCIPAL:
+// renomear a opção desejada para apenas color_option
+// menu Verde com logo branco
+const color_option1 = {
+    backgroundColor: theme.palette.primary.main,
+    fontColor: '#fff',
+    fontColorHover: theme.palette.secondary.light,
+    logoImg: "/previsio_logo_bc.svg"
+}
+
+
+// menu azul com logo verde
+const color_option = {
+    backgroundColor: theme.palette.previsio_blue.light,
+    fontColor: '#e3e3e3',
+    fontColorHover: theme.palette.primary.light,
+    logoImg: "/previsio_logo_vd.svg"
+}
+
+
+// menu branco com logo verde
+const color_option3 = {
+    backgroundColor: '#fff',
+    fontColor: theme.palette.previsio_blue.main,
+    fontColorHover: theme.palette.primary.light,
+    logoImg: "/previsio_logo_vd.svg"
+}
+
+
 function Menu(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -47,9 +76,10 @@ function Menu(props) {
                     variant="h6"
                     fontSize={32}
                     align='left'
-                    color={'#061018'}
+                    color={theme.palette.previsio_blue.light}
                     marginLeft={2}
-                    sx={{ my: 2 }}>
+                    sx={{ my: 2 }}
+                >
                     Previsio
                 </Typography>
             </Box>
@@ -77,13 +107,11 @@ function Menu(props) {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AppBar
                 component="nav"
-                //sx={{ backgroundColor: '#061018' }} //Azul escuro
-                sx={{ backgroundColor: '#09253C' }} //Azul um pouco menos escuro
-                //sx={{ backgroundColor: theme.palette.primary.main }} //Verde
+                sx={{ backgroundColor: color_option.backgroundColor }} //Azul
             >
                 <Toolbar>
                     <IconButton
-                        color="inherit"
+                        color={color_option.fontColor}
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
@@ -91,14 +119,14 @@ function Menu(props) {
                     >
                         <MenuIcon
                             sx={{
-                                color: '#fff',
+                                color: color_option.fontColor,
                                 '&:hover': {
-                                    color: theme.palette.primary.light, // Set the font color on hover
+                                    color: color_option.fontColorHover, // Set the font color on hover
                                 },
                             }} />
                     </IconButton>
                     <Image
-                        src="/previsio_logo_vd.svg"
+                        src={color_option.logoImg}
                         //src="/previsio_logo_bc.svg" //logo branco
                         alt="Logo Previsio Engenharia"
                         width={30}
@@ -107,6 +135,7 @@ function Menu(props) {
                     <Typography
                         style={{ fontFamily: '"Roboto Slab", sans-serif' }}
                         variant="h6"
+                        color={color_option.fontColor}
                         fontSize={28}
                         component="div"
                         marginLeft={2}
@@ -119,9 +148,9 @@ function Menu(props) {
                             <Link href={item.link} key={item.text} style={{ textDecoration: 'none' }}>
                                 <Button
                                     sx={{
-                                        color: '#fff',
+                                        color: color_option.fontColor,
                                         '&:hover': {
-                                            color: theme.palette.primary.light, // Set the font color on hover
+                                            color: color_option.fontColorHover, // Set the font color on hover
                                         },
                                     }}>
                                     {item.text}

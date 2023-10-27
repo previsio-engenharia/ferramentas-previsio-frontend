@@ -21,6 +21,10 @@ export const theme = createTheme({
         info: {
             main: '#e0e0e0',
         },
+        previsio_blue: {
+            light: '#09253C',
+            main: '#061018'
+        }
     },
     typography: {
         fontSize: 14,

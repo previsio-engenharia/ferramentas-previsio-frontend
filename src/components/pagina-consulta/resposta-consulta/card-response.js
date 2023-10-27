@@ -18,9 +18,6 @@ export default function CardResponse({ statusResponse, dados }) {
                     <Grid container
                         spacing={2}
                         p={2}
-                        sx={{
-                            //backgroundColor:'grey'
-                        }}
                     >
                         <Grid item xs={12} >
                             <Typography

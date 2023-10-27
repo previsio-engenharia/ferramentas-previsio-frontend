@@ -80,7 +80,7 @@ export default function ConsultaNR04() {
                 //userEmail: ''
             }));
             //scroll da tela para área da resposta
-            targetRef.current.scrollIntoView({ behavior: 'smooth' })
+            targetRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
         }
     }
 
@@ -109,8 +109,6 @@ export default function ConsultaNR04() {
                     </Typography>
                     <CardAvisoTestes />
                 </Grid>
-                {/*aviso de testes*/}
-
                 {/*texto grau de risco*/}
                 <Grid item xs={12} sm={12} md={6}
                     justifyContent="center"
@@ -164,13 +162,13 @@ export default function ConsultaNR04() {
                         <Tab label="CNAE" value='cnae' />
                     </Tabs>
 
-                    <Grid item xs={12} component={'form'} onSubmit={consultaTabelas} sx={{ p: 2 }}>
+                    <Grid  item xs={12} component={'form'} onSubmit={consultaTabelas} sx={{ py: 2 }}>
                         {
                             dataForm.type == 'cnpj' ?
                                 (<FormCnpj dataForm={dataForm} setDataForm={setDataForm} />)
                                 : (<FormCnae dataForm={dataForm} setDataForm={setDataForm} />)
                         }
-                        <Grid item xs={12}>
+                        <Grid item xs={12} ref={targetRef}>
                             <Button
                                 variant="contained"
                                 fullWidth
@@ -183,7 +181,7 @@ export default function ConsultaNR04() {
                     </Grid>
                 </Grid>
                 {/* área de resposta */}
-                <Grid ref={targetRef} item xs m={2}>
+                <Grid item xs m={2} >
                     {
                         statusResponse.loading ? (
                             <Stack spacing={2}>
