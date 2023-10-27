@@ -1,12 +1,10 @@
-//next
-import Head from "next/head"
 //mui
 import { Container, CssBaseline, ThemeProvider } from "@mui/material"
 //theme
 import { theme } from "styles/themes"
+//components
 import Menu from "./menu"
 import Footer from "./footer"
-//components
 
 export default function Layout({ children }) {
     return (
