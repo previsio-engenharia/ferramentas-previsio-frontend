@@ -16,6 +16,7 @@ import CardExplicaConsulta from 'components/pagina-consulta/card-explica-consult
 import CardAvisoTestes from 'components/card-aviso-testes';
 import Head from 'next/head';
 import { ListaLinkIndex } from 'components/lista-links-ferramentas';
+import { gerarRelatorio } from 'lib/chamaGeracaoRelatorio';
 
 export default function ConsultaNR04() {
     //ref utilizada para fazer scroll da tela para a área da resposta
@@ -63,10 +64,11 @@ export default function ConsultaNR04() {
         if (respostaConsultaTabelas) {
             //atualiza campos com a resposta
             updateResponseState(respostaConsultaTabelas, setStatusResponse, setRespostaConsulta)
+            //scroll da tela para área da resposta
+            targetRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
 
-            //envia infos para salvar registro da consulta no DB
-            await saveQueryOnDB(dataForm, respostaConsultaTabelas)
-
+            //copia dados do form para limpar tela
+            let dataFormCopy = dataForm;
             //limpa dados da consulta realizada
             setDataForm((previousState) => ({
                 ...previousState,
@@ -77,10 +79,18 @@ export default function ConsultaNR04() {
                 numero_trabalhadores: '',
                 //type: 'cnpj',
                 //receberEmail: true,
-                //userEmail: ''
+                userEmail: ''
             }));
-            //scroll da tela para área da resposta
-            targetRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
+
+            if(dataForm.receberEmail && respostaConsultaTabelas.success){
+                const resp = await gerarRelatorio(dataForm, respostaConsultaTabelas)
+                //console.log("Resposta da API node:", resp)
+            }
+
+            //envia infos para salvar registro da consulta no DB
+            await saveQueryOnDB(dataForm, respostaConsultaTabelas)
+
+            dataFormCopy = null;
         }
     }
 

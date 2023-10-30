@@ -51,7 +51,7 @@ export async function validateAndSendForm(dataForm) {
         }
     }
 
-    //se deu certo até aqui, realiza o POST
+    //se deu certo até aqui, realiza o POST 
     try {
         const res = await fetch('/api/realiza-consultas', {
             method: 'POST',
@@ -96,6 +96,11 @@ export async function saveQueryOnDB(dataForm, apiResponse) {
         nro_trabalhadores: dataForm.numero_trabalhadores || null,
         email: dataForm.userEmail || null
     }
+
+            
+    //
+    console.log("DATAFORM:", dataForm);
+    console.log("RESPONSE:", apiResponse);
 
     //se deu certo até aqui, realiza o POST
     try {
