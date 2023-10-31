@@ -6,7 +6,6 @@ export async function gerarRelatorio(dataForm, respostaApi) {
     try {
         //const res = await fetch('http://localhost:5000/api/report', {
         const res = await fetch(API_RELATORIO, {
-
             method: 'POST',
             body: JSON.stringify({
                 form: dataForm, 
@@ -14,7 +13,7 @@ export async function gerarRelatorio(dataForm, respostaApi) {
             }),
             headers: { 'Content-Type': 'application/json' }
         });
-
+        //console.log("RESPOSTA API", res.json())
         return await res.json();
 
     } catch (err) {
