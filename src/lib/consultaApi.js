@@ -99,8 +99,8 @@ export async function saveQueryOnDB(dataForm, apiResponse) {
 
             
     //
-    console.log("DATAFORM:", dataForm);
-    console.log("RESPONSE:", apiResponse);
+    //console.log("DATAFORM:", dataForm);
+    //console.log("RESPONSE:", apiResponse);
 
     //se deu certo até aqui, realiza o POST
     try {
