@@ -128,11 +128,14 @@ export default async function handler(req, res) {
         if (resposta.dadosDaEmpresa) {
             resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
             
-            //console.log("Verifica Dispensa PGR")
+            /* console.log("Verifica Dispensa PGR:")
+            console.log("MEI:", resposta.dadosDaEmpresa.opcao_pelo_mei)
+            console.log("Porte:", resposta.dadosDaEmpresa.codigo_porte)
+            console.log("GR:", resposta.dadosDaEmpresa.maiorGrauDeRisco) */
             if (resposta.dadosDaEmpresa.opcao_pelo_mei) {
                 resposta.dadosDaEmpresa.dispensaPGR = true;
             }
-            else if (resposta.dadosDaEmpresa.codigoPorte == 1 || resposta.dadosDaEmpresa.codigoPorte == 3) {
+            else if (resposta.dadosDaEmpresa.codigo_porte == 1 || resposta.dadosDaEmpresa.codigo_porte == 3) {
                 if (maiorGrauRisco < 3) {
                     resposta.dadosDaEmpresa.dispensaPGR = true;
                 }
