@@ -22,7 +22,7 @@ export default function TabelaDadosSesmt({ dadosSesmt }) {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <Typography variant="h5" component='h3' >Equipe SESMT necessária</Typography>
+                <Typography variant="h5" component='h3' >Dimensionamento SESMT</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TableContainer component={Paper}>

@@ -22,7 +22,7 @@ export default function TabelaDadosCipa({ dadosCipa }) {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <Typography variant="h5" component='h3' >Equipe CIPA necessária</Typography>
+                <Typography variant="h5" component='h3' >Dimensionamento CIPA</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <TableContainer component={Paper}>

@@ -115,7 +115,7 @@ export default function ConsultaNR04() {
                             display: { xs: 'none', md: 'block' }
                         }}
                     >
-                        Consulta NR04: Equipe SESMT
+                        Consulta NR04: Dimensionamento SESMT
                     </Typography>
                     <CardAvisoTestes />
                 </Grid>
@@ -146,7 +146,7 @@ export default function ConsultaNR04() {
                         textAlign='center'
                         sx={{ p: 2 }}
                     >
-                        Consultas: Equipe SESMT
+                        Consultas: Dimensionamento SESMT
                     </Typography>
                     <Typography
                         paragraph

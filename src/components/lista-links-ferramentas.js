@@ -43,7 +43,7 @@ export function ListaLinksFerramentas() {
                             }}>
                                 <ArrowForwardIcon />
                             </ListItemIcon>
-                            <ListItemText primary='Consulta Equipe SESMT' secondary='NR04' sx={{
+                            <ListItemText primary='Consulta Dimensionamento SESMT' secondary='NR04' sx={{
                                 color: theme.palette.primary.main
                             }} />
                         </ListItemButton>
@@ -59,7 +59,7 @@ export function ListaLinksFerramentas() {
                             }}>
                                 <ArrowForwardIcon />
                             </ListItemIcon>
-                            <ListItemText primary='Consulta Equipe CIPA' secondary='NR05' sx={{
+                            <ListItemText primary='Consulta Dimensionamento CIPA' secondary='NR05' sx={{
                                 color: theme.palette.primary.main
                             }} />
                         </ListItemButton>

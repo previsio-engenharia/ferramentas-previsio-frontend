@@ -97,7 +97,7 @@ export default function ConsultaNR05() {
     return (
         <>
             <Head>
-                <meta name="description" content="Previsio Engenharia: Consulta NR-05: Constituição de Equipe CIPA" />
+                <meta name="description" content="Previsio Engenharia: Consulta NR-05: Dimensionamento CIPA" />
                 <title>Consulta NR05 - Previsio Engenharia</title>
             </Head>
             <Grid container >
@@ -113,7 +113,7 @@ export default function ConsultaNR05() {
                             display: { xs: 'none', md: 'block' }
                         }}
                     >
-                        Consulta NR05: Equipe CIPA
+                        Consulta NR05: Dimensionamento CIPA
                     </Typography>
                     <CardAvisoTestes />
                 </Grid>
@@ -146,7 +146,7 @@ export default function ConsultaNR05() {
                         textAlign='center'
                         sx={{ p: 2 }}
                     >
-                        Composição da Equipe da CIPA
+                        Consultas: Dimensionamento CIPA
                     </Typography>
                     <Typography
                         paragraph
