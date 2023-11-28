@@ -43,13 +43,19 @@ export async function validateAndSendForm(dataForm) {
         }
     }
 
+    if (!dataForm.userEmail.match(emailRegex)) {
+        alert('Erro: Insira um e-mail válido.');
+        return
+    }
 
+    /* 
     if (dataForm.receberEmail) {
         if (!dataForm.userEmail.match(emailRegex)) {
             alert('Erro: Insira um e-mail válido.');
             return
         }
     }
+    */
 
     //se deu certo até aqui, realiza o POST 
     try {

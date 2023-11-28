@@ -85,22 +85,18 @@ export default function FormCnae(props) {
                         </Grid>
                     ) : (null)
                 }
-                {
-                    dataForm.receberEmail ? (
-                        <Grid item xs={12}>
-                            <TextField
-                                type="email"
-                                name="userEmail"
-                                fullWidth
-                                label="E-mail"
-                                variant="outlined"
-                                onChange={onChangeInput}
-                                value={dataForm.userEmail}
-                            />
-                        </Grid>
 
-                    ) : (null)
-                }
+                <Grid item xs={12}>
+                    <TextField
+                        type="email"
+                        name="userEmail"
+                        fullWidth
+                        label="E-mail"
+                        variant="outlined"
+                        onChange={onChangeInput}
+                        value={dataForm.userEmail}
+                    />
+                </Grid>
 
                 <Grid item xs={12}>
                     <FormControlLabel control={
