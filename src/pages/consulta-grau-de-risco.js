@@ -31,7 +31,7 @@ export default function ConsultaGR() {
         codigo_cnae2: '',
         numero_trabalhadores: '',
         type: 'cnpj',
-        receberEmail: true,
+        receberEmail: false,
         userEmail: ''
     });
 

@@ -30,7 +30,7 @@ export default function ConsultaNR05() {
         codigo_cnae2: '',
         numero_trabalhadores: '',
         type: 'cnpj',
-        receberEmail: true,
+        receberEmail: false,
         userEmail: ''
     });
 
