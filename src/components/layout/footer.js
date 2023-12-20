@@ -62,7 +62,7 @@ const Footer = () => (
                             <ListItemIcon>
                                 <LocationOnIcon color="primary" />
                             </ListItemIcon>
-                            <ListItemText primary="Rua Júlio de Castilhos, 45 Niterói - Canoas /RS" />
+                            <ListItemText primary="Rua Monteiro Lobato, 149, Rio Branco - São Leopoldo /RS" />
                         </ListItem>
 
                         <ListItem key={'email'}>
