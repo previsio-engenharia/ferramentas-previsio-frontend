@@ -9,10 +9,14 @@
     54	    // CNAE informado não encontrado no DB
     55	    // Não foi possível realizar correspondência na tabela SESMT
     56	    // Não foi possível realizar correspondência na tabela CIPA
+    57      // Muitas requisições para a API de dados de CNPJ.  
  */
 
 import { dimensionamento_sesmt, relacao_cnae_gr, observacoes_tabela_sesmt } from "static/nr04_tables";
 import { dimensionamento_cipa } from "static/nr05_tables";
+
+const URL_API_1_CONSULTA_CNPJ = 'https://minhareceita.org/'
+const URL_API_2_CONSULTA_CNPJ = 'https://receitaws.com.br/v1/cnpj/'
 
 export default async function handler(req, res) {
     // só aceita método POST. Se receber outro retorna erro
@@ -68,10 +72,10 @@ export default async function handler(req, res) {
 
     //se recebeu cnpj, consulta na API minhareceita
     if (cnpjInserido) {
-        const dados = await consultaCnpj(cnpjInserido);
+        const dados = await consultaCnpjOpcao2(cnpjInserido);
         if (dados.success) {
-            resposta.dadosDaEmpresa = { 
-                ... dados.dadosDaEmpresa,
+            resposta.dadosDaEmpresa = {
+                ...dados.dadosDaEmpresa,
                 numero_trabalhadores: numeroTrabalhadoresInserido,
             };
             arrayDadosCnae = dados.dadosCnaes;
@@ -127,7 +131,7 @@ export default async function handler(req, res) {
     else {
         if (resposta.dadosDaEmpresa) {
             resposta.dadosDaEmpresa.maiorGrauDeRisco = maiorGrauRisco
-            
+
             /* console.log("Verifica Dispensa PGR:")
             console.log("MEI:", resposta.dadosDaEmpresa.opcao_pelo_mei)
             console.log("Porte:", resposta.dadosDaEmpresa.codigo_porte)
@@ -136,6 +140,12 @@ export default async function handler(req, res) {
                 resposta.dadosDaEmpresa.dispensaPGR = true;
             }
             else if (resposta.dadosDaEmpresa.codigo_porte == 1 || resposta.dadosDaEmpresa.codigo_porte == 3) {
+                if (maiorGrauRisco < 3) {
+                    resposta.dadosDaEmpresa.dispensaPGR = true;
+                }
+            } else 
+            //cai neste caso se não hover codigo_porte na resposta da api
+            if (resposta.dadosDaEmpresa.porte == 'MICRO EMPRESA' || resposta.dadosDaEmpresa.codigo_porte == 'EMPRESA DE PEQUENO PORTE') {
                 if (maiorGrauRisco < 3) {
                     resposta.dadosDaEmpresa.dispensaPGR = true;
                 }
@@ -212,13 +222,19 @@ export default async function handler(req, res) {
 }
 
 
-//funções
 
-async function consultaCnpj(cnpjInserido) {
+/**
+ * Consulta CNPJ no minhareceita.org
+ * @param {*} cnpjInserido 
+ * @returns 
+ */
+async function consultaCnpjOpcao1(cnpjInserido) {
     try {
         //GET request na API
         //console.log("Consulta o CNPJ");
-        const response = await fetch('https://minhareceita.org/' + cnpjInserido);
+        const response = await fetch(URL_API_1_CONSULTA_CNPJ + cnpjInserido, {
+            method: 'GET',
+        });
         const dadosCnpj = await response.json();
         //console.log("RESP", dadosCnpj);
 
@@ -267,6 +283,106 @@ async function consultaCnpj(cnpjInserido) {
             status_consulta: 51,
             mensagem: 'Não foi possível acessar a consulta do CNPJ. Considere realizar a consulta com o código CNAE, ou tente novamente mais tarde.'
         }
+    }
+}
+
+
+/**
+ * Consulta o CNPJ no cnpj.dev/
+ * @param {*} cnpjInserido 
+ * @returns 
+ */
+async function consultaCnpjOpcao2(cnpjInserido) {
+    
+    const digitosCnpj = retornaDigitosCNPJ(cnpjInserido);
+    //console.log({digitosCnpj});
+    
+    try {
+        //GET request na API
+        //console.log("Consulta o CNPJ");
+        const response = await fetch(URL_API_2_CONSULTA_CNPJ + digitosCnpj, {
+            method: 'GET',
+        });
+        const dadosCnpj = await response.json();
+        console.log({dadosCnpj});
+
+        if (response.status == 429) {
+            //cnpj consultado não encontrado
+            return {
+                success: false,
+                status_consulta: 51,
+                mensagem: 'Aguarde alguns instantes para realizar uma nova consulta',
+            }
+        }
+
+        if (response.status == 400 || dadosCnpj.status=='ERROR') {
+            //cnpj consultado não encontrado
+            return {
+                success: false,
+                status_consulta: 52,
+                mensagem: dadosCnpj.message,
+            }
+        }
+
+        console.log(dadosCnpj.atividade_principal[0]);
+        //inicializa com cnae fiscal na posição 0
+        let cnaes = [{
+            codigo: dadosCnpj.atividade_principal[0].code.substring(0, 7),
+            //descricao: dadosCnpj.cnae_fiscal_descricao,
+        }]
+
+        dadosCnpj.atividades_secundarias.forEach((element, index) => {
+            console.log(element);
+            cnaes.push({
+                codigo: element.code.substring(0, 7)
+                //descricao: element.descricao,
+            })
+        });
+
+        return {
+            success: true,
+            mensagem: "Consulta api ok",
+            dadosDaEmpresa: {
+                cnpj: dadosCnpj.cnpj,
+                porte: dadosCnpj.porte,
+                //codigo_porte: dadosCnpj.codigo_porte,
+                razao_social: dadosCnpj.nome,
+                nome_fantasia: dadosCnpj.fantasia,
+                //opcao_pelo_mei: dadosCnpj.opcao_pelo_mei,
+                //opcao_pelo_simples: dadosCnpj.opcao_pelo_simples,               
+            },
+            dadosCnaes: cnaes,
+        }
+    }
+    catch (error) {
+        console.log(`Não conseguiu consultar CNPJ: ${error}`);
+        return {
+            success: false,
+            status_consulta: 51,
+            mensagem: 'Não foi possível acessar a consulta do CNPJ. Considere realizar a consulta com o código CNAE, ou tente novamente mais tarde.'
+        }
+    }
+   
+}
+
+/**
+ * Retorna uma String com somente os numeros do CNPJ fornecido.
+ * Se o formato estiver incorreto, retorna uma string vazia
+ * @param {string} stringCnpj
+ * @return {string}
+ */
+function retornaDigitosCNPJ(stringCnpj) {
+    // Usa a expressão regular para encontrar todos os dígitos na string
+    const regex = /\d/g;
+    const digitArray = stringCnpj.match(regex);
+
+    // Junte os dígitos encontrados em uma única string e retorna
+    // Devem existir exatamente 14 digitos para um CNPJ válido
+    if (digitArray && digitArray.length == 14) {
+        return digitArray.join('');
+    } else {
+        // Se nenhum dígito for encontrado, retorne uma string vazia
+        return '';
     }
 }
 
@@ -397,13 +513,13 @@ function consultaNr04Cnaes(maiorGrauRisco, nroTrabalhadores) {
         return respostaErro;
     }
     else {
-        if(consultaSesmt.obsSesmt1){
+        if (consultaSesmt.obsSesmt1) {
             consultaSesmt.obsSesmt1 = observacoes_tabela_sesmt[0]
         }
-        if(consultaSesmt.obsSesmt2){
+        if (consultaSesmt.obsSesmt2) {
             consultaSesmt.obsSesmt2 = observacoes_tabela_sesmt[1]
         }
-        if(consultaSesmt.obsSesmt3){
+        if (consultaSesmt.obsSesmt3) {
             consultaSesmt.obsSesmt3 = observacoes_tabela_sesmt[2]
         }
         return consultaSesmt;
