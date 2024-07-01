@@ -1,5 +1,6 @@
 //mui
 import { Grid, Typography } from '@mui/material';
+import AdBanner from 'components/ad-banner';
 import { ListaLinksFerramentas } from 'components/lista-links-ferramentas';
 
 import Head from 'next/head';
@@ -71,6 +72,14 @@ export default function Home() {
                         Oferecemos ferramentas práticas para consultar informações relacionadas a normas regulamentadoras brasileiras.  Simplificamos a busca por dados normativos, ajudando você a conhecer melhor as regulamentações de segurança no trabalho. Comece sua pesquisa agora e descubra o que as normas têm a dizer.
                     </Typography>
 
+                </Grid>
+
+                <Grid item xs={12}>
+                    <AdBanner
+                        data-ad-slot="4248484465"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    />
                 </Grid>
             </Grid>
         </>
