@@ -73,14 +73,14 @@ export default function Home() {
                     </Typography>
 
                 </Grid>
-
+                {/* 
                 <Grid item xs={12}>
                     <AdBanner
                         data-ad-slot="4248484465"
                         data-ad-format="auto"
                         data-full-width-responsive="true"
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
         </>
 
